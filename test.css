@@ -12,6 +12,7 @@
 	text-shadow:#fff 5px 5px 5px;
 	padding-left: 10px ;
 	margin-top:5px ;
+	margin-bottom:5px ;
 }
 #log .row {
 	position:relative ;
@@ -117,7 +118,7 @@ td .winner {
 .expla {
 	float: left ;
 	margin:2px 0 0 3px;
-	width:150px
+	width:180px
 }
 .expla-container {
 	width: 100% ;
@@ -140,5 +141,6 @@ td .winner {
 .setup-field {
 	float: right ;
 }
-}
+#cleanup {
+	margin-top:4px ;
 }
