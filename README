@@ -1,1 +1,2 @@
-A simple test between WebSQL and IndexedDB. The Demo page can be found at http://calje.eu/db/
+A simple test between WebSQL and IndexedDB. A demo page is installed at http://calje.eu/db/
+Currently WebSQL can only be tested in Chrome and IndexedDB in Firefox.
