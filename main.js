@@ -51,6 +51,7 @@ $(function(){ // onload
 		// execute the plan
 		var options = testPlan[testPlanPointer] ;
 		window.test.benchmark.start() ;
+		$('#' + window.test.current.id + ' .' + options.method + ' .status').addClass('in-progress') ;
 		if ( typeof(window.test.current[options.method]) == 'function') { // test implemented?
 			if ( options.method.match(/Multiple/) ) {
 				window.test.current[options.method]( $.extend(options, window.test.data.getLowerUpperBoundBy(options.columnName)) ) ;
