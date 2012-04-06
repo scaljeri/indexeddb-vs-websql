@@ -1,6 +1,8 @@
 "use strict" ;
 
-/* Seeded random number generator */
+/* Seeded random number generator 
+ * see: http://stackoverflow.com/questions/424292/how-to-create-my-own-javascript-random-number-generator-that-i-can-also-set-the
+ */
 (function($){
 	var config = {
 			A: 48271,
