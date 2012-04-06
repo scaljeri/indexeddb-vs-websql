@@ -52,7 +52,8 @@ $(function(){ // onload
 		var options = testPlan[testPlanPointer] ;
 		window.test.benchmark.start() ;
 		$('#' + window.test.current.id + ' .' + options.method + ' .status').addClass('in-progress') ;
-		if ( typeof(window.test.current[options.method]) == 'function') { // test implemented?
+		options.skip = !$('#test-headers input.' + options.method).is(':checked') ;
+		if ( typeof(window.test.current[options.method]) == 'function' && (!options.skip || options.method == 'setup') ) { // test implemented?. Always execute the setup test => db connection stuff
 			if ( options.method.match(/Multiple/) ) {
 				window.test.current[options.method]( $.extend(options, window.test.data.getLowerUpperBoundBy(options.columnName)) ) ;
 			}

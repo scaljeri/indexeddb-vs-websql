@@ -31,7 +31,7 @@
 		create: function(num, seed) {
 			num = parseInt(num) ;
 			// structure: {ssn:"111-11-1115",name:"Donna",age:12,email:"donna123@gmail.org"}
-			if ( records && records.length == num && oldSeed == seed) // any changes ?
+			if ( window.test.data.records && window.test.data.records.length == num && oldSeed == seed) // any changes ?
 				return records ;
 			window.test.data.records = [] ;
 			window.test.seed = (oldSeed = seed) ;

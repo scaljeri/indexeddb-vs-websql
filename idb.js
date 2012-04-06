@@ -41,18 +41,22 @@
 		},
 		selectByPK: function(options) {
 			if ( disabled == false ) {
-				var transaction = dbconn.result.transaction([OBJECTSTORENAME], getIndexedDBObject('IDBTransaction').READ_WRITE) ;
-				var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
-				var request = objectStore.get(options.record[options.columnName]) ; 
+				var transaction = getTransaction('READ') ;
+				if ( transaction ) {
+					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
+					var request = objectStore.get(options.record[options.columnName]) ; 
                                 
-				request.onsuccess = function(e) {                                        
-					request.result[options.validationKey] ;
-					options.callback(1);
+					request.onsuccess = function(e) {                                        
+						request.result[options.validationKey] ;
+						options.callback(1);
+					}
+					request.onerror = function(e) {
+						window.test.log.error('could not lookup record: ' + e.message) ;
+						options.callback(0) ;
+					}
 				}
-				request.onerror = function(e) {
-					window.test.log.error('could not lookup record: ' + e.message) ;
+				else
 					options.callback(0) ;
-				}
 			}
 			else {
 				options.callback(-1);
@@ -60,14 +64,18 @@
 		},
 		selectByUI: function(options) {
 			if ( disabled == false ) {
-				var transaction = dbconn.result.transaction([OBJECTSTORENAME], getIndexedDBObject('IDBTransaction').READ_WRITE) ;
-                var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
+				var transaction = getTransaction('READ') ;
+				if ( transaction ) {
+					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
 
-                var index = objectStore.index(options.columnName);  
-                index.get(options.record[options.columnName]).onsuccess = function(event) {  
-                		event.target.result[options.validationKey] ;
-                		options.callback(1);
-                }; 
+                	var index = objectStore.index(options.columnName);  
+                	index.get(options.record[options.columnName]).onsuccess = function(event) {  
+                			event.target.result[options.validationKey] ;
+                			options.callback(1);
+                	}; 
+				}
+				else
+					options.callback(0);
 			}
             else {
                 options.callback(-1);
@@ -75,23 +83,27 @@
 		},
 		selectMultipleByPK: function(options) {
 			if ( disabled == false ) {
-				var transaction = dbconn.result.transaction([OBJECTSTORENAME], getIndexedDBObject('IDBTransaction').READ_WRITE) ;
-                var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
+				var transaction = getTransaction('READ') ;
+				if ( transaction ) {
+					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
 
-				var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, false);  
-				var count = 0 ;
-				objectStore.openCursor(boundKeyRange).onsuccess = function(event) {
-					var cursor = event.target.result;
-                    if (cursor) {
-                    	count ++ ;
-                        cursor.value.age ; // make sure the value is not lazy loaded
-                        cursor.continue();
-                    }
-                    else { // ready
-						window.test.log.info('Bound search on primary key, found ' + count + ' entries.') ;
-                        options.callback(1);
-                    }
-				};
+					var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, false);  
+					var count = 0 ;
+					objectStore.openCursor(boundKeyRange).onsuccess = function(event) {
+						var cursor = event.target.result;
+                    	if (cursor) {
+                    		count ++ ;
+                        	cursor.value.age ; // make sure the value is not lazy loaded
+                        	cursor.continue();
+                    	}
+                    	else { // ready
+                    		window.test.log.info('Bound search on primary key, found ' + count + ' entries.') ;
+                        	options.callback(1);
+                    	}
+					};
+				}
+				else
+					options.callback(0);
 			}
 			else {
 				options.callback(-1);
@@ -102,23 +114,27 @@
     	},
     	selectMultipleByI: function(options, indexType) {
     		if ( disabled == false ) {
-    			var transaction = dbconn.result.transaction([OBJECTSTORENAME], getIndexedDBObject('IDBTransaction').READ_WRITE) ;
-            	var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
+				var transaction = getTransaction('READ') ;
+				if ( transaction ) {
+					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
 	
-            	var index = objectStore.index(options.columnName);
-            	var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, false);
-            	var count = 0 ;
-            	index.openCursor(boundKeyRange).onsuccess = function(event) {
-            		var cursor = event.target.result;
-                	if (cursor) {
-                		count++ ;
-                    	cursor.continue();
-                	}
-                	else { // ready
-						window.test.log.info('Bound search on ' + (indexType||'') + ' index, found ' + count + ' entries.') ;
-                    	options.callback(1);
-                	}
-            	};
+            		var index = objectStore.index(options.columnName);
+            		var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, false);
+            		var count = 0 ;
+            		index.openCursor(boundKeyRange).onsuccess = function(event) {
+            			var cursor = event.target.result;
+                		if (cursor) {
+                			count++ ;
+                    		cursor.continue();
+                		}
+                		else { // ready
+							window.test.log.info('Bound search on ' + (indexType||'') + ' index, found ' + count + ' entries.') ;
+                    		options.callback(1);
+                		}
+            		};
+				}
+				else
+					options.callback(0);
         	}
         	else {
             	options.callback(-1);
@@ -142,20 +158,30 @@
 			disabled = true ;
 			options.callback(0) ;
 		};  
-		dbconn.onsuccess = function(event) {  
+		dbconn.onsuccess = function(event) {
 			// cleanup	
- 			var db = event.target.result ;
+			var db = event.target.result ;
 			try {
-				var transaction = db.transaction([OBJECTSTORENAME], getIndexedDBObject('IDBTransaction').READ_WRITE);
-    				var objectStore = transaction.objectStore(OBJECTSTORENAME);  
-				objectStore.clear() ;
-				options.callback(1) ;
+				var transaction = getTransaction('READ_WRITE') ;
+				if ( transaction ){
+					if ( !options.skip) {
+						var objectStore = transaction.objectStore(OBJECTSTORENAME);  
+						objectStore.clear() ;
+						options.callback(1) ;
+					}
+					else
+						options.callback(-1) ;
+				}
+				else {
+					disabled = true ;
+					options.callback(0) ;
+				}
 			} catch(e) {
 				window.test.log.error('Could not access the object store (Error: ' + e.message + ')') ;
 				disabled = true ;
 				options.callback(0) ;
 			}
-		}
+		} ;
 		dbconn.onupgradeneeded = function(event) {  
 			// Update object stores and indices    
 			console.info('onupgradeneeded') ;
@@ -170,10 +196,19 @@
 			var objectStore = db.createObjectStore( OBJECTSTORENAME, {keyPath:"ssn"} ) ;
 			objectStore.createIndex("name","name",{unique:false});         
 			objectStore.createIndex("email","email",{unique:true});
-		}  
+		} ;
 	}
 
 	function getIndexedDBObject(name) {
 		return window[name] || window['webkit' + name] || window['moz' + name] || window['ms' + name] ;
+	}
+	function getTransaction( mode) {
+		try {
+			return dbconn.result.transaction([OBJECTSTORENAME], getIndexedDBObject('IDBTransaction')[mode]) ;
+		}
+		catch(e) {
+			window.test.log.error('Could not create a transaction (Error: ' + e.message+')') ;
+			return null ;
+		}
 	}
 })(jQuery) ;

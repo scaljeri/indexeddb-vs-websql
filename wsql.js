@@ -14,17 +14,21 @@
 			if ( window.openDatabase ) {
 				try {
 		 			dbconn = openDatabase(DBNAME, VERSION, 'performance test database', 10 * 1024 * 1024); // 10MB in size
-        	 		dbconn.transaction(function (tx) {
-        	 			tx.executeSql('DROP TABLE IF EXISTS customers') ;
-                 		tx.executeSql('CREATE TABLE IF NOT EXISTS customers (ssn TEXT PRIMARY KEY, email TEXT NOT NULL, name TEXT, age INTEGER, UNIQUE(email))') ;
-                 		tx.executeSql('CREATE INDEX email_idx ON customers (email)') ;
-        			}, function(err){
-        				window.test.error( 'could not create table (Error: ' + err.message + ')') ;
-        				disabled = true ;
-        				options.callback(0) ;
-        			}, function(){
-        				options.callback(1) ;
-        			});
+		 			if ( !options.skip) {
+		 				dbconn.transaction(function (tx) {
+        	 				tx.executeSql('DROP TABLE IF EXISTS customers') ;
+                 			tx.executeSql('CREATE TABLE IF NOT EXISTS customers (ssn TEXT PRIMARY KEY, email TEXT NOT NULL, name TEXT, age INTEGER, UNIQUE(email))') ;
+                 			tx.executeSql('CREATE INDEX email_idx ON customers (email)') ;
+        				}, function(err){
+        					window.test.error( 'could not create table (Error: ' + err.message + ')') ;
+        					disabled = true ;
+        					options.callback(0) ;
+        				}, function(){
+        					options.callback(1) ;
+        				});
+		 			}
+		 			else 
+		 				options.callback(-1) ;
 				} catch(e) {
 					window.test.error('could not connect to the database (Error: ' + e.message + ')') ;
 					//window.test.info

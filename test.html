@@ -70,16 +70,16 @@
 				<th colspan="2">Select single value by</ht>
 				<th colspan="4">Select multiple values by</ht>
 			</tr>
-			<tr>
+			<tr id="test-headers">
 				<th id="dbtype">DB type</th>
-				<th class="result">Setup</th>
-				<th class="result">Insert</th>
-				<th class="result">Primary-Key</th>
-				<th class="result">Unique index</th>
-				<th class="result">Primary key</th>
-				<th class="result">Unique index</th>
-				<th class="result">Index</th>
-				<th class="result">No index</th>
+				<th class="result">Setup <input class="setup" type="checkbox" checked/></th>
+				<th class="result">Insert <input class="insert"  type="checkbox" checked/></th>
+				<th class="result">Primary-Key <input class="selectByPK"  type="checkbox" checked/></th>
+				<th class="result">Unique index <input class="selectByUI"  type="checkbox" checked/></th>
+				<th class="result">Primary key <input class="selectMultipleByPK"  type="checkbox" checked/></th>
+				<th class="result">Unique index <input class="selectMultipleByUI"  type="checkbox" checked/></th>
+				<th class="result">Index <input class="selectMultipleByI"  type="checkbox" checked/></th>
+				<th class="result">No index <input class="selectMultiple"  type="checkbox" checked/></th>
 			<tr id="ls">
 				<td class="wider"><input type="checkbox" id="ls-onoff" />
 					LocalStorage</td>
