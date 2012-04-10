@@ -32,8 +32,14 @@
 					  .parent().find('.time-spent').html('') ;
 			
 			window.test.go({
-				numberOfRecords : $('#number-of-records').val(),
-				seed : $('#random-seed').val(),
+				numberOfRecords : parseInt($('#number-of-records').val()),
+				bounds: {
+					pk: parseInt($('#norByPK').val()),
+					ui: parseInt($('#norByUI').val()),
+					i:  parseInt($('#norByI').val()),
+					wi: parseInt($('#norWI').val()) // search Without an Index
+				},
+				seed : parseInt($('#random-seed').val()),
 				dbsEnabled : {
 					ls : $('#ls-onoff').is(':checked'),
 					idb : $('#idb-onoff').is(':checked'),
@@ -64,6 +70,12 @@
 		</fieldset>
 		<button id="go">Begin Test</button>
 
+		<div class="help">
+			<ul>
+				<li>Use the checkboxes to disable/enable tests -and storage engines</li>
+				<li>For bound searches it is possible to define the number of matches!</li>	
+			</ul>
+		</div>
 		<table border="1">
 			<tr>
 				<th colspan="3"></th>
@@ -76,10 +88,10 @@
 				<th class="result">Insert <input class="insert"  type="checkbox" checked/></th>
 				<th class="result">Primary-Key <input class="selectByPK"  type="checkbox" checked/></th>
 				<th class="result">Unique index <input class="selectByUI"  type="checkbox" checked/></th>
-				<th class="result">Primary key <input class="selectMultipleByPK"  type="checkbox" checked/></th>
-				<th class="result">Unique index <input class="selectMultipleByUI"  type="checkbox" checked/></th>
-				<th class="result">Index <input class="selectMultipleByI"  type="checkbox" checked/></th>
-				<th class="result">No index <input class="selectMultiple"  type="checkbox" checked/></th>
+				<th class="result">Primary key <input class="selectMultipleByPK"  type="checkbox" checked/><input id="norByPK" class="nor" value="10"></th>
+				<th class="result">Unique index <input class="selectMultipleByUI"  type="checkbox" checked/><input id="norByUI" class="nor" value="10"></th>
+				<th class="result">Index <input class="selectMultipleByI"  type="checkbox" checked/><input id="norByI" class="nor" value="10"></th>
+				<th class="result">No index <input class="selectMultiple"  type="checkbox" checked/><input id="norWI" class="nor" value="10"></th>
 			<tr id="ls">
 				<td class="wider"><input type="checkbox" id="ls-onoff" />
 					LocalStorage</td>

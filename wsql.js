@@ -30,7 +30,7 @@
 		 			else 
 		 				options.callback(-1) ;
 				} catch(e) {
-					window.test.error('could not connect to the database (Error: ' + e.message + ')') ;
+					window.test.log.error('could not connect to the database (Error: ' + e.message + ')') ;
 					//window.test.info
 					disabled = true ;
 					options.callback(0) ;
@@ -43,8 +43,8 @@
 		},
 		insert: function(options) {
 			if ( disabled == false ) {
+				var record, sql, i ;
 				dbconn.transaction( function(tx) {
-						var record, sql, i ;
 						for( i in options.records )  {
 							record = options.records[i] ;
 							tx.executeSql('INSERT INTO ' + TABLENAME + ' (ssn, email, name, age) VALUES(?,?,?,?)', 
@@ -56,8 +56,8 @@
 							) ;
 						}
 				}, function(err) {
-					window.test.error( 'could not insert records (Error: ' + err.message + ')') ;
-					window.test.info( 'record ' + i + ' failed: ' + JSON.stringify(record) ) ;
+					window.test.log.error( 'could not insert records (Error: ' + err.message + ')') ;
+					window.test.log.info( 'record ' + i + ' failed: ' + JSON.stringify(record) ) ;
 					disabled = true ;
 					options.callback(0) ;
 				}, function(){ 
@@ -101,7 +101,12 @@
     				  sql += options.columnName + ' = "' + options.record[options.columnName] + '"' ; 
     			   }
     			   else {
-    				   sql += options.columnName + ' >= "' + options.lowerBound[options.columnName] + '" AND ' + options.columnName + ' <= "' + options.upperBound[options.columnName] + '"';
+    				   // sometimes the lowerbound and upperbound value are the same, this happens with non unique indices/columns
+    				   var upperBoundOperator = options.upperBound[options.columnName] == options.lowerBound[options.columnName] ? '<=' : '<' ;
+    				   
+    				   sql += options.columnName + ' >= "' + options.lowerBound[options.columnName] + '" AND ' + options.columnName + ' ' + upperBoundOperator + ' "' + options.upperBound[options.columnName] + '"';
+    				   if ( options.limit )
+    					   sql += " LIMIT " + options.limit ;
     			   }
     			   window.test.log.debug(sql) ;
                    tx.executeSql(sql, [], function (tx, results) {

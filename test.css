@@ -142,3 +142,16 @@ td .winner {
 #cleanup {
 	margin-top:4px ;
 }
+.nor {
+	width: 40px ;
+	margin-left: 5px ;
+	margin-right: 5px ;
+}
+.help {
+	border: 2px solid green ;
+	margin: 5px ;
+	width: 500px ;
+	 -moz-border-radius: 10px; /* Firefox */
+  	-webkit-border-radius: 10px; /* Safari, Chrome */
+  	border-radius: 10px; /* CSS3 */
+}

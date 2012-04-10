@@ -21,10 +21,14 @@ $(function(){ // onload
 			] ;
 	
 	window.test.go = function(options) {
-		window.test.log.clear() ;
-		window.test.benchmark.init() ;
+		window.test.benchmark.init() ; // begin new test
 		
-		window.test.data.create(options.numberOfRecords, options.seed) ;
+		// cleanup old test info
+		window.test.log.clear() ;
+		window.test.current = null ;
+		dbsPointer = -1 ;
+		
+		window.test.data.create(options) ;
 		for( var i in testPlan ) { // extend options
 			testPlan[i].callback = window.test.callback ; // add callback function
 			if ( testPlan[i].records )
@@ -33,7 +37,6 @@ $(function(){ // onload
 		for( var i in dbs )  // enable/disable test
 			dbs[i].enabled = options.dbsEnabled[dbs[i].obj.id] ;
 		
-		dbsPointer = -1 ;
 		window.test.executeTestPlan() ;
 	} ;
 	
@@ -55,10 +58,10 @@ $(function(){ // onload
 		options.skip = !$('#test-headers input.' + options.method).is(':checked') ;
 		if ( typeof(window.test.current[options.method]) == 'function' && (!options.skip || options.method == 'setup') ) { // test implemented?. Always execute the setup test => db connection stuff
 			if ( options.method.match(/Multiple/) ) {
-				window.test.current[options.method]( $.extend(options, window.test.data.getLowerUpperBoundBy(options.columnName)) ) ;
+				window.test.current[options.method]( $.extend(options, window.test.data.getMultiValueBounds(options.columnName)) ) ;
 			}
 			else {
-				window.test.current[options.method]( $.extend(options, { record: window.test.data.record } )) ;
+				window.test.current[options.method]( $.extend(options, { record: window.test.data.getSingleValueRecordBy(options.method) } )) ;
 			}
 		}
 		else

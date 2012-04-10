@@ -87,7 +87,7 @@
 				if ( transaction ) {
 					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
 
-					var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, false);  
+					var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, true);  
 					var count = 0 ;
 					objectStore.openCursor(boundKeyRange).onsuccess = function(event) {
 						var cursor = event.target.result;
@@ -119,13 +119,15 @@
 					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
 	
             		var index = objectStore.index(options.columnName);
-            		var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, false);
+            		var includeUpperBound = indexType == 'unique' ? true : false ; 
+            		var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, includeUpperBound);
             		var count = 0 ;
             		index.openCursor(boundKeyRange).onsuccess = function(event) {
             			var cursor = event.target.result;
-                		if (cursor) {
+                		if (cursor && (!options.limit || count < options.limit)) {
+                			cursor.value[options.validationKey] ; 
                 			count++ ;
-                    		cursor.continue();
+               				cursor.continue();
                 		}
                 		else { // ready
 							window.test.log.info('Bound search on ' + (indexType||'') + ' index, found ' + count + ' entries.') ;
