@@ -27,12 +27,17 @@
 			window.test.cleanup() ;	
 		}) ;
 		$('#go').on('click', function(e) {
+			// check input
+			var nor = parseInt($('#number-of-records').val()) ;
+			if ( nor <= parseInt($('#norByPK').val()) || nor <= parseInt($('#norByUI').val()) || nor <= parseInt($('#norByI').val()) || nor <= parseInt($('#norWI').val()) )
+					return alert('Input Error: The number of records is not big enough!') ;
 			//cleanup
 			$('table').find('.status').removeClass('ok error skip') 
 					  .parent().find('.time-spent').html('') ;
 			
+			
 			window.test.go({
-				numberOfRecords : parseInt($('#number-of-records').val()),
+				numberOfRecords : nor,
 				bounds: {
 					pk: parseInt($('#norByPK').val()),
 					ui: parseInt($('#norByUI').val()),
@@ -72,8 +77,12 @@
 
 		<div class="help">
 			<ul>
+				<li>Test IndexedDB with Firefox and WebSQL with Chrome</li>
 				<li>Use the checkboxes to disable/enable tests -and storage engines</li>
 				<li>For bound searches it is possible to define the number of matches!</li>	
+				<li>Inserting more than 500000 records is at your own risk!!</li>
+				<li>IndexedDB will best perform if you first do 'setup' and 'insert', then disable these two and run the tests after a minute</li>
+				<li>If Web SQL gives you an 'INVALID_STATE_ERR: DOM Exception 11' error, <a href="http://martinsikora.com/how-to-delete-web-sql-database-in-google-chrome">removing the sql files from disk</a> will fix it</li>	
 			</ul>
 		</div>
 		<table border="1">

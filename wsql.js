@@ -101,10 +101,7 @@
     				  sql += options.columnName + ' = "' + options.record[options.columnName] + '"' ; 
     			   }
     			   else {
-    				   // sometimes the lowerbound and upperbound value are the same, this happens with non unique indices/columns
-    				   var upperBoundOperator = options.upperBound[options.columnName] == options.lowerBound[options.columnName] ? '<=' : '<' ;
-    				   
-    				   sql += options.columnName + ' >= "' + options.lowerBound[options.columnName] + '" AND ' + options.columnName + ' ' + upperBoundOperator + ' "' + options.upperBound[options.columnName] + '"';
+    				   sql += options.columnName + ' >= "' + options.lowerBound[options.columnName] + '" AND ' + options.columnName + ' <= "' + options.upperBound[options.columnName] + '"' ;
     				   if ( options.limit )
     					   sql += " LIMIT " + options.limit ;
     			   }
@@ -114,7 +111,7 @@
                 		   window.test.log.info( startInfoMsg + ', found ' + results.rows.length + ' entries') ;
                 	   if ( results.rows.length > 0 ) {
     				   		for( var i = 0; i < results.rows.length; i++) {
-    					   		results.rows.item(i).ssn ;
+    					   		results.rows.item(i)[options.validationKey] ; // get 
     				   		}
                        		options.callback(1);
                 	   }

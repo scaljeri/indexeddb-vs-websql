@@ -87,13 +87,13 @@
 				if ( transaction ) {
 					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
 
-					var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, true);  
+					var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, false);  
 					var count = 0 ;
 					objectStore.openCursor(boundKeyRange).onsuccess = function(event) {
 						var cursor = event.target.result;
-                    	if (cursor) {
+						if (cursor && (!options.limit || count < options.limit)) {
                     		count ++ ;
-                        	cursor.value.age ; // make sure the value is not lazy loaded
+                        	cursor.value[options.validationKey] ; // make sure the value is not lazy loaded
                         	cursor.continue();
                     	}
                     	else { // ready
@@ -119,8 +119,7 @@
 					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
 	
             		var index = objectStore.index(options.columnName);
-            		var includeUpperBound = indexType == 'unique' ? true : false ; 
-            		var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, includeUpperBound);
+            		var boundKeyRange = getIndexedDBObject('IDBKeyRange').bound(options.lowerBound[options.columnName], options.upperBound[options.columnName], false, false);
             		var count = 0 ;
             		index.openCursor(boundKeyRange).onsuccess = function(event) {
             			var cursor = event.target.result;

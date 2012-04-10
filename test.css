@@ -149,8 +149,8 @@ td .winner {
 }
 .help {
 	border: 2px solid green ;
-	margin: 5px ;
-	width: 500px ;
+	margin: 5px 0 5px 0 ;
+	width: 1230px ;
 	 -moz-border-radius: 10px; /* Firefox */
   	-webkit-border-radius: 10px; /* Safari, Chrome */
   	border-radius: 10px; /* CSS3 */
