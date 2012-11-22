@@ -1,7 +1,7 @@
 "use strict"; 
 
 (function($){
-	var DBNAME = 'idb-test', OBJECTSTORENAME = 'customers', VERSION = 11 ;
+	var DBNAME = 'idb-test', OBJECTSTORENAME = 'customers', VERSION = 12 ;
 	var idb, dbconn ;
 	var disabled = false ;
 	
@@ -20,7 +20,7 @@
 		},
 		insert: function(options) {
 			if ( disabled == false ) {
-				var transaction = dbconn.result.transaction(['customers'], getIndexedDBObject('IDBTransaction').READ_WRITE) ;
+				var transaction = dbconn.result.transaction(['customers'], 'readwrite') ;
 
 				var retval = 1 ;
 				try {
@@ -41,7 +41,7 @@
 		},
 		selectByPK: function(options) {
 			if ( disabled == false ) {
-				var transaction = getTransaction('READ') ;
+				var transaction = getTransaction('readonly') ;
 				if ( transaction ) {
 					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
 					var request = objectStore.get(options.record[options.columnName]) ; 
@@ -64,7 +64,7 @@
 		},
 		selectByUI: function(options) {
 			if ( disabled == false ) {
-				var transaction = getTransaction('READ') ;
+				var transaction = getTransaction('readonly') ;
 				if ( transaction ) {
 					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
 
@@ -83,7 +83,7 @@
 		},
 		selectMultipleByPK: function(options) {
 			if ( disabled == false ) {
-				var transaction = getTransaction('READ') ;
+				var transaction = getTransaction('readonly') ;
 				if ( transaction ) {
 					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
 
@@ -114,7 +114,7 @@
     	},
     	selectMultipleByI: function(options, indexType) {
     		if ( disabled == false ) {
-				var transaction = getTransaction('READ') ;
+				var transaction = getTransaction('readonly') ;
 				if ( transaction ) {
 					var objectStore = transaction.objectStore(OBJECTSTORENAME) ;
 	
@@ -163,12 +163,20 @@
 			// cleanup	
 			var db = event.target.result ;
 			try {
-				var transaction = getTransaction('READ_WRITE') ;
+				var transaction = getTransaction('readwrite') ;
 				if ( transaction ){
 					if ( !options.skip) {
-						var objectStore = transaction.objectStore(OBJECTSTORENAME);  
-						objectStore.clear() ;
-						options.callback(1) ;
+						if ( transaction.db.objectStoreNames.contains(OBJECTSTORENAME) ) {	
+							var objectStore = transaction.objectStore(OBJECTSTORENAME);  
+							objectStore.clear() ;
+							options.callback(1) ;
+						}
+						else {
+							window.test.log.error('Could not access the object store (Error: ' + e.message + ')') ;
+							disabled = true ;
+							options.callback(0) ;
+
+						}
 					}
 					else
 						options.callback(-1) ;
@@ -205,7 +213,7 @@
 	}
 	function getTransaction( mode) {
 		try {
-			return dbconn.result.transaction([OBJECTSTORENAME], getIndexedDBObject('IDBTransaction')[mode]) ;
+			return dbconn.result.transaction([OBJECTSTORENAME], mode ) ;
 		}
 		catch(e) {
 			window.test.log.error('Could not create a transaction (Error: ' + e.message+')') ;
