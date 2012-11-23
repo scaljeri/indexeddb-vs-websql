@@ -11,17 +11,18 @@
 		});
 	
 		$('#sqldump').on('click', function(){
-			window.test.data.create( $('#number-of-records').val(), $('#random-seed').val() ) ;
-       		var output = 'DROP TABLE IF EXISTS customers;\n' ;
-       		output += 'CREATE TABLE IF NOT EXISTS customers (ssn VARCHAR(20) PRIMARY KEY, email VARCHAR(50) NOT NULL, name VARCHAR(30), age INTEGER, UNIQUE(email));\n' ;
-     		output += 'CREATE INDEX email_idx ON customers (email);\n' ;
-     		var record ;
-     		for( var i in window.test.data.records ) {
-     			record = window.test.data.records[i] ;
-     			output += 'INSERT INTO ' + window.test.TABLENAME + ' (ssn, email, name, age) VALUES("' + record['ssn'] + '", "' +  record['email'] + '", "' + record['name'] + '", ' + record['age'] + ');\n' ;
-     		}
-     		$('.sqldump').html(output) ;
-       	}) ;
+			window.test.data.create( window.test.createOptions() ) ; 
+       			var output = 'DROP TABLE IF EXISTS customers;\n' ;
+       			output += 'CREATE TABLE IF NOT EXISTS customers (ssn VARCHAR(20) PRIMARY KEY, email VARCHAR(50) NOT NULL, name VARCHAR(30), age INTEGER, UNIQUE(email));\n' ;
+     			output += 'CREATE INDEX email_idx ON customers (email);\n' ;
+     			var record ;
+     			for( var i in window.test.data.records ) {
+     				record = window.test.data.records[i] ;
+     				output += 'INSERT INTO ' + window.test.TABLENAME + ' (ssn, email, name, age) VALUES("' + record['ssn'] + '", "' +  record['email'] + '", "' + record['name'] + '", ' + record['age'] + ');\n' ;
+     			}
+     			$('.sqldump').html(output) ;
+       		}) ;
+
 		$('#cleanup').on('click', function(e) {
 			window.test.benchmark.init() ;
 			window.test.cleanup() ;	
@@ -53,6 +54,25 @@
 			});
 		});
 	});
+
+	window.test.createOptions = function() {
+		return {
+                                numberOfRecords : $('#number-of-records').val(),
+                                bounds: {
+                                        pk: parseInt($('#norByPK').val()),
+                                        ui: parseInt($('#norByUI').val()),
+                                        i:  parseInt($('#norByI').val()),
+                                        wi: parseInt($('#norWI').val()) // search Without an Index
+                                },
+                                seed : parseInt($('#random-seed').val()),
+                                dbsEnabled : {
+                                        ls : $('#ls-onoff').is(':checked'),
+                                        idb : $('#idb-onoff').is(':checked'),
+                                        wsql : $('#wsql-onoff').is(':checked')
+                                }
+		}
+	} ;
+
 </script>
 <script src="benchmark.js"></script>
 <script src="log.js"></script>
