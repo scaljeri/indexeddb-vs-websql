@@ -195,12 +195,11 @@
 			// Update object stores and indices    
 			console.info('onupgradeneeded') ;
 
-			var db = event.target.result ;
-
-	 		for (var i = 0; i < db.objectStoreNames.length; i ++) {
-                                console.info('delete object store: ' + db.objectStoreNames[i]) ;
-                                db.deleteObjectStore(db.objectStoreNames[i]);
-                        }
+			var db = event.target.result;
+            
+            while (db.objectStoreNames.length) {
+              db.deleteObjectStore(db.objectStoreNames[0]);
+            }
 
 			var objectStore = db.createObjectStore( OBJECTSTORENAME, {keyPath:"ssn"} ) ;
 			objectStore.createIndex("name","name",{unique:false});         
@@ -209,7 +208,8 @@
 	}
 
 	function getIndexedDBObject(name) {
-		return window[name] || window['webkit' + name] || window['moz' + name] || window['ms' + name] ;
+		return window[name[0].toLowerCase() + name.slice(1)] 
+            || window['webkit' + name] || window['moz' + name] || window['ms' + name] ;
 	}
 	function getTransaction( mode) {
 		try {
