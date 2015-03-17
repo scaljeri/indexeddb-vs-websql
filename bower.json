@@ -1,0 +1,21 @@
+{
+  "name": "indexeddb-vs-websql",
+  "version": "0.0.0",
+  "homepage": "https://github.com/scaljeri/indexeddb-vs-websql",
+  "authors": [
+    "Lucas Calje <lucas@frontmen.nl>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "zepto": "~1.1.6",
+    "firebase": "~2.2.2",
+    "rivets": "~0.8.0"
+  }
+}

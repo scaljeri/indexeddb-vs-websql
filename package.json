@@ -1,0 +1,32 @@
+{
+  "name": "indexeddb-vs-websql",
+  "version": "1.0.0",
+  "description": "A simple test between WebSQL and IndexedDB. Currently WebSQL can only be tested in Chrome and IndexedDB in Firefox.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scaljeri/indexeddb-vs-websql.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scaljeri/indexeddb-vs-websql/issues"
+  },
+  "homepage": "https://github.com/scaljeri/indexeddb-vs-websql",
+  "devDependencies": {
+    "6to5ify": "^4.1.1",
+    "browserify": "^9.0.3",
+    "gulp": "^3.8.11",
+    "gulp-6to5": "^3.0.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-concat": "^2.5.2",
+    "gulp-sourcemaps": "^1.5.0",
+    "gulp-uglify": "^1.1.0",
+    "gulp-util": "^3.0.4",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
