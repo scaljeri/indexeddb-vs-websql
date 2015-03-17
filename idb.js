@@ -22,18 +22,33 @@
 			if ( disabled == false ) {
 				var transaction = dbconn.result.transaction(['customers'], 'readwrite') ;
 
-				var retval = 1 ;
 				try {
-					var objectStore = transaction.objectStore('customers') ;
-					for( var i in options.records ) {
-    						objectStore.add(options.records[i]) ;
+					window.test.log.info('Inserting records');
+					var transaction = getTransaction('readwrite');
+					if (transaction) {
+						var objectStore = transaction.objectStore('customers') ;
+						for( var i in options.records ) {
+							objectStore.add(options.records[i]);
+						}
+						transaction.oncomplete = function(e) {
+							window.test.log.info('Records inserted');
+							options.callback(1);
+						};
+						transaction.onerror = function(e) {
+							window.test.log.error('could not insert records');
+							options.callback(0);
+						};
+						transaction.onabort = function(e) {
+							window.test.log.error('Aborted transaction');
+							options.callback(0);
+						};
+					} else {
+						options.callback(0);
 					}
 				} catch(e) {
 					window.test.log.error('could not insert records (Error: ' + e.message + ')') ;
 					options.callback(0) ;
-					retval = 0 ;
 				}
-				options.callback(retval) ;
 			}
 			else {
 				options.callback(-1) ;
