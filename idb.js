@@ -175,30 +175,39 @@
 			options.callback(0) ;
 		};  
 		dbconn.onsuccess = function(event) {
-			// cleanup	
+			// cleanup
 			var db = event.target.result ;
 			try {
-				var transaction = getTransaction('readwrite') ;
-				if ( transaction ){
-					if ( !options.skip) {
-						if ( transaction.db.objectStoreNames.contains(OBJECTSTORENAME) ) {	
-							var objectStore = transaction.objectStore(OBJECTSTORENAME);  
+				if (!options.skip) {
+					var transaction = getTransaction('readwrite') ;
+					if (transaction) {
+						if (transaction.db.objectStoreNames.contains(OBJECTSTORENAME) ) {
+							var objectStore = transaction.objectStore(OBJECTSTORENAME);
 							objectStore.clear() ;
-							options.callback(1) ;
+						} else {
+							window.test.log.error('Could not access the object store (Error: ' + e.message + ')') ;
 						}
-						else {
+
+						transaction.oncomplete = function(e) {
+							window.test.log.info('Records inserted');
+							options.callback(1);
+						};
+						transaction.onerror = function(e) {
 							window.test.log.error('Could not access the object store (Error: ' + e.message + ')') ;
 							disabled = true ;
-							options.callback(0) ;
-
-						}
+							options.callback(0);
+						};
+						transaction.onabort = function(e) {
+							window.test.log.error('Aborted transaction');
+							disabled = true ;
+							options.callback(0);
+						};
+					} else {
+						disabled = true ;
+						options.callback(0) ;
 					}
-					else
-						options.callback(-1) ;
-				}
-				else {
-					disabled = true ;
-					options.callback(0) ;
+				} else {
+					options.callback(-1) ;
 				}
 			} catch(e) {
 				window.test.log.error('Could not access the object store (Error: ' + e.message + ')') ;
