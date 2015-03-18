@@ -14,8 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "zepto": "~1.1.6",
-    "firebase": "~2.2.2",
-    "rivets": "~0.8.0"
+    "knockout.js": "~3.1.0",
+    "zepto.js": "~1.1.6"
   }
 }
