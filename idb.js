@@ -10,8 +10,9 @@
 			* callback - a callback function which expectes: {setup:true} (succes) or {setup:false} (error) object
 	*/
 	window.IDB = function(options){
-		idb = getIndexedDBObject( 'IndexedDB' ) ;
-	}
+		idb = getIndexedDBObject( 'indexedDB' ) ;
+	};
+
 	window.IDB.prototype = {
 		id: 'idb',
 		name: 'IndexedDB',
@@ -22,18 +23,33 @@
 			if ( disabled == false ) {
 				var transaction = dbconn.result.transaction(['customers'], 'readwrite') ;
 
-				var retval = 1 ;
 				try {
-					var objectStore = transaction.objectStore('customers') ;
-					for( var i in options.records ) {
-    						objectStore.add(options.records[i]) ;
+					window.test.log.info('Inserting records');
+					var transaction = getTransaction('readwrite');
+					if (transaction) {
+						var objectStore = transaction.objectStore('customers') ;
+						for( var i in options.records ) {
+							objectStore.add(options.records[i]);
+						}
+						transaction.oncomplete = function(e) {
+							window.test.log.info('Records inserted');
+							options.callback(1);
+						};
+						transaction.onerror = function(e) {
+							window.test.log.error('could not insert records');
+							options.callback(0);
+						};
+						transaction.onabort = function(e) {
+							window.test.log.error('Aborted transaction');
+							options.callback(0);
+						};
+					} else {
+						options.callback(0);
 					}
 				} catch(e) {
 					window.test.log.error('could not insert records (Error: ' + e.message + ')') ;
 					options.callback(0) ;
-					retval = 0 ;
 				}
-				options.callback(retval) ;
 			}
 			else {
 				options.callback(-1) ;
@@ -160,30 +176,39 @@
 			options.callback(0) ;
 		};  
 		dbconn.onsuccess = function(event) {
-			// cleanup	
+			// cleanup
 			var db = event.target.result ;
 			try {
-				var transaction = getTransaction('readwrite') ;
-				if ( transaction ){
-					if ( !options.skip) {
-						if ( transaction.db.objectStoreNames.contains(OBJECTSTORENAME) ) {	
-							var objectStore = transaction.objectStore(OBJECTSTORENAME);  
+				if (!options.skip) {
+					var transaction = getTransaction('readwrite') ;
+					if (transaction) {
+						if (transaction.db.objectStoreNames.contains(OBJECTSTORENAME) ) {
+							var objectStore = transaction.objectStore(OBJECTSTORENAME);
 							objectStore.clear() ;
-							options.callback(1) ;
+						} else {
+							window.test.log.error('Could not access the object store (Error: ' + e.message + ')') ;
 						}
-						else {
+
+						transaction.oncomplete = function(e) {
+							window.test.log.info('Records inserted');
+							options.callback(1);
+						};
+						transaction.onerror = function(e) {
 							window.test.log.error('Could not access the object store (Error: ' + e.message + ')') ;
 							disabled = true ;
-							options.callback(0) ;
-
-						}
+							options.callback(0);
+						};
+						transaction.onabort = function(e) {
+							window.test.log.error('Aborted transaction');
+							disabled = true ;
+							options.callback(0);
+						};
+					} else {
+						disabled = true ;
+						options.callback(0) ;
 					}
-					else
-						options.callback(-1) ;
-				}
-				else {
-					disabled = true ;
-					options.callback(0) ;
+				} else {
+					options.callback(-1) ;
 				}
 			} catch(e) {
 				window.test.log.error('Could not access the object store (Error: ' + e.message + ')') ;
@@ -196,10 +221,11 @@
 			console.info('onupgradeneeded') ;
 
 			var db = event.target.result;
-            
-            while (db.objectStoreNames.length) {
-              db.deleteObjectStore(db.objectStoreNames[0]);
-            }
+
+      while (db.objectStoreNames.length) {
+        console.info('delete object store: ' + db.objectStoreNames[0]) ;
+        db.deleteObjectStore(db.objectStoreNames[0]);
+      }
 
 			var objectStore = db.createObjectStore( OBJECTSTORENAME, {keyPath:"ssn"} ) ;
 			objectStore.createIndex("name","name",{unique:false});         
@@ -207,10 +233,12 @@
 		} ;
 	}
 
-	function getIndexedDBObject(name) {
-		return window[name[0].toLowerCase() + name.slice(1)] 
-            || window['webkit' + name] || window['moz' + name] || window['ms' + name] ;
-	}
+  function getIndexedDBObject(name) {
+    var upper = name[0].toUpperCase() + name.slice(1);
+
+    return window[name] || window['webkit' + upper] || window['moz' + upper] || window['ms' + upper] ;
+  }
+
 	function getTransaction( mode) {
 		try {
 			return dbconn.result.transaction([OBJECTSTORENAME], mode ) ;

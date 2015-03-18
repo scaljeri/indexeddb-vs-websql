@@ -66,8 +66,8 @@
 		},
 		getMultiValueBounds: function(key) {
 			return multiValueBounds[key]  ;
-		},
-	}
+		}
+	};
 
 	function generateSsn() { // ssn: 1253-3456-2342 (unique identifier)
 		return ''    + rand(0,9) + rand(0,9)  + rand(0,9) + rand(0,9) +
