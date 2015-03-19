@@ -1,3 +1,31 @@
+@import "reset";
+@import "config-form";
+@import "results";
+@import "logging";
+
+* {
+    box-sizing: border-box;
+}
+
 body {
     background-color: #fff;
+    .config-form {
+        float: left;
+        width: 250px;
+    }
+    .logging {
+        float: right;
+        width: 680px;
+    }
+
+    .results {
+        float: right;
+        width: calc(100% - 40px);
+    }
+
+    main {
+        max-width: 1024px;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }

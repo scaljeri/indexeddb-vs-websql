@@ -5,6 +5,24 @@ import IDB from './IDB';
 let generator = Generator.instance;
 let callable = Function.bind.bind(Function.call);
 
+/*
+let viewModel = {
+    results: {},
+    logger: {},
+    config: {
+        numberOfRecord: ko.observable(1000)
+    }
+};*/
+
+let viewModel = {
+    results: {},
+    logger: {},
+    config: {
+        records: ko.observable(1000),
+        seed: ko.observable(2345678901)
+    }
+};
+
 class View {
     constructor(options) {
         this.idb = new IDB();
@@ -22,7 +40,11 @@ class View {
 
     render() {
         $('body').append('<h1>Hello</h1>');
+        return this;
     }
 }
 
-new View().render();
+$(() => {
+    console.log("SETUP KO");
+    ko.applyBindings(viewModel);
+});

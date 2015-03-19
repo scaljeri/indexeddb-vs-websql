@@ -1,5 +1,7 @@
 <html>
+
 <head>
+    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="build/css/styles.css" rel="stylesheet" type="text/css">
     <script src="bower_components/zepto.js/dist/zepto.min.js"></script>
     <script src="bower_components/knockout.js/knockout.debug.js"></script>
@@ -12,36 +14,129 @@
             {{/each}}
         </ul>
     </script>
-<head>
-<body>
-<h2>Participants</h2>
-Here are the participants:
-<div data-bind="template: { name: 'person-template', data: list}"></div>
-<div data-bind="template: { name: 'person-template-list', foreach:list }"></div>
 
-<script type="text/html" id="person-template">
-    <h3 data-bind="text: $data[0].name"></h3>
-    <p>Credits: <span data-bind="text: $data[0].credits"></span></p>
-</script>
-<script type="text/html" id="person-template-list">
-    <h3 data-bind="text: $data.name"></h3>
-    <p>Credits: <span data-bind="text: $data.credits"></span></p>
-</script>
+    <head>
 
-<button data-bind="click: addPerson">Add Person</button>
+        <body>
+            <main>
+                <fieldset class="config-form">
+                    <legend>Configuration</legend>
+                    <form>
+                        <div class="form-group">
+                            <label for="number-of-records">Number of records</label>
+                            <input type="number" class="form-control" id="number-of-records"
+                                   data-bind="attr: {placeholder: config.records}">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Seed value</label>
+                            <input type="number" class="form-control" id="seedValue" data-bind="attr: {placeholder: config.seed}">
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+                </fieldset>
 
-<script type="text/javascript">
-    function MyViewModel() {
-        this.list = ko.observableArray([
-            { name: 'Franklin', credits: 250 },
-            { name: 'Mario', credits: 5800 }]);
-    }
-    MyViewModel.prototype.addPerson = function () {
-        this.list.push({name: 'Other', credits: 10});
-    };
-    ko.applyBindings(new MyViewModel());
-</script>
-<!--
+                <fieldset class="logging">
+                    <legend>Logging</legend>
+                </fieldset>
+
+                <fieldset class="results">
+                    <legend>Results</legend>
+                    <div class="row-header">
+                        <div class="column-group">
+                            <div class="col-md-3 row-item"></div>
+                            <div class="col-md-3 row-item">Select single value by</div>
+                            <div class="col-md-6 row-item">
+                                <span>Select multiple values by</span>
+                                <input type="number" class="form-control select-total" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 column-group">
+                            <div class="col-md-5 row-item">
+                                <span>DB type</span>
+                                <input type="checkbox" class="checkbox" />
+                            </div>
+                            <div class="col-md-4 row-item">
+                                <span>Setup</span>
+                                <input type="checkbox" class="checkbox" />
+                            </div>
+                            <div class="col-md-3 row-item no-border">
+                                <span>Insert</span>
+                                <input type="checkbox" class="checkbox" />
+                            </div>
+                        </div>
+                        <div class="col-md-3 column-group">
+                            <div class="col-md-6 row-item">
+                                <span>Primary-Key</span>
+                                <input type="checkbox" class="checkbox" />
+                            </div>
+                            <div class="col-md-6 row-item">
+                                <span>Unique index</span>
+                                <input type="checkbox" class="checkbox" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 column-group">
+                            <div class="col-md-3 row-item">
+                                <span>Primary key</span>
+                                <input type="checkbox" class="checkbox" />
+                            </div>
+                            <div class="col-md-3 row-item">
+                               <span>Unique index</span>
+                                <input type="checkbox" class="checkbox" />
+                            </div>
+                            <div class="col-md-3 row-item">
+                                <span>Index</span>
+                                <input type="checkbox" class="checkbox" />
+                            </div>
+                            <div class="col-md-3 row-item">
+                                <span>No index</span>
+                                <input type="checkbox" class="checkbox" />
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </main>
+
+            <!--
+            <h2>Participants</h2> Here are the participants:
+            <div data-bind="template: { name: 'person-template', data: list}"></div>
+            <div data-bind="template: { name: 'person-template-list', foreach:list }"></div>
+
+            <script type="text/html" id="person-template">
+                <h3 data-bind="text: $data[0].name"></h3>
+                <p>Credits: <span data-bind="text: $data[0].credits"></span>
+                </p>
+            </script>
+            <script type="text/html" id="person-template-list">
+                <h3 data-bind="text: $data.name"></h3>
+                <p>Credits: <span data-bind="text: $data.credits"></span>
+                </p>
+            </script>
+
+            <button data-bind="click: addPerson">Add Person</button>
+
+            <script type="text/javascript">
+                function MyViewModel() {
+                    this.list = ko.observableArray([
+                        {
+                            name: 'Franklin',
+                            credits: 250
+                        },
+                        {
+                            name: 'Mario',
+                            credits: 5800
+                        }]);
+                }
+                MyViewModel.prototype.addPerson = function () {
+                    this.list.push({
+                        name: 'Other',
+                        credits: 10
+                    });
+                };
+                ko.applyBindings(new MyViewModel());
+            </script>
+            <!--
     <h3>Details</h3>
 
     <p>First Name: <input data-bind="value: firstName"></p>
@@ -53,27 +148,37 @@ Here are the participants:
 
     <div data-bind="template: 'friendsTemplate'"></div>
 -->
-    <script>
-        /*
-        function Friend(name) {
-            return {
-                name: ko.observable(name)
-            };
-        }
+            <script>
+                /*
+                                                                                                                                        function Friend(name) {
+                                                                                                                                            return {
+                                                                                                                                                name: ko.observable(name)
+                                                                                                                                            };
+                                                                                                                                        }
 
-        $(function () {
-            var viewModel = {
-                firstName: ko.observable('liucas'),
-                lastName:  ko.observable('calje'),
-                friends: ko.observableArray([new Friend('Renske'), new Friend('John')])
-            };
-            viewModel.fullName = ko.dependentObservable(function () {
-                return this.firstName() + ' ' + this.lastName();
-            }, viewModel);
+                                                                                                                                        $(function () {
+                                                                                                                                            var viewModel = {
+                                                                                                                                                firstName: ko.observable('liucas'),
+                                                                                                                                                lastName:  ko.observable('calje'),
+                                                                                                                                                friends: ko.observableArray([new Friend('Renske'), new Friend('John')])
+                                                                                                                                            };
+                                                                                                                                            viewModel.fullName = ko.dependentObservable(function () {
+                                                                                                                                                return this.firstName() + ' ' + this.lastName();
+                                                                                                                                            }, viewModel);
 
-            ko.applyBindings(viewModel);
-        });
-        */
-    </script>
-</body>
+                                                                                                                                            ko.applyBindings(viewModel);
+                                                                                                                                        });
+                                                                                                                                        */
+                /*
+                viewModel = {
+                    nor: ko.observable(1000),
+                    config: {
+                        numberOfRecords: ko.observable(2000)
+                    }
+                };
+
+                ko.applyBindings(viewModel); */
+            </script>
+        </body>
+
 </html>

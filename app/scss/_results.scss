@@ -1,0 +1,44 @@
+.results {
+    border: 2px solid grey;
+    border-radius: 10px;
+    margin: 20px;
+    padding: 20px;
+    legend {
+        margin-bottom: 0;
+        padding-left: 10px;
+    }
+    .row-header {
+        font-weight: 700;
+        .column-group {
+            padding-left: 0;
+            padding-right: 0;
+            border-bottom: 1px solid lightgrey;
+            overflow: hidden;
+            padding: 3px 0;
+        }
+        .row-item {
+            height: 20px;
+            text-align: center;
+            padding: 0;
+            &:nth-child(2) {
+                border-left: 1px solid lightgrey;
+            }
+            &:nth-child(3) {
+                border-left: 1px solid lightgrey;
+                border-right: 1px solid lightgrey;
+            }
+            &:last-of-type {
+                border-right: none;
+            }
+            &.no-border {
+                border-right: none;
+            }
+        }
+        .select-total {
+            display: inline-block;
+            height: 20px;
+            padding: 0 5px;
+            width: 60px;
+        }
+    }
+}
