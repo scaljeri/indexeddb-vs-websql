@@ -1,41 +1,81 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var sourcemaps = require('gulp-sourcemaps');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var browserify = require('browserify');
 var to5ify = require('6to5ify');
-var uglify = require('gulp-uglify');
+var $ = require('gulp-load-plugins')();
+var connect = require('gulp-connect');
 
-gulp.task('default', function() {
-  browserify('./src/app.js', { debug: true })
-      .transform(to5ify)
-      .bundle()
-      //.on('error', gutil.log.bind(gutil, 'Browserify Error'))
-      .pipe(source('bundle.js'))
-      .pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-      //.pipe(uglify())
-      .pipe(sourcemaps.write('./')) // writes .map file
-      .pipe(gulp.dest('./build'));
+gulp.task('default', function () {
+    gulp.start('js', 'css', 'watch');
 });
 
-/*
-var gulp = require('gulp');
-var sourcemaps = require('gulp-sourcemaps');
-var to5 = require('gulp-6to5');
-var concat = require('gulp-concat');
-var browserify = require('gulp-browserify');
- 
-gulp.task('default', function () {
-    return gulp.src('src/** /*.js')
-        .pipe(sourcemaps.init())
-        .pipe(to5())
-        .pipe(concat('app-all.js'))
-        .pipe(sourcemaps.write('.'))
-        .pipe(browserify({
-          insertGlobals : true,
-          debug : true
+gulp.task('watch', ['webserver'], function () {
+    $.livereload.listen();
+
+    gulp.watch('app/scss/**/*.scss', ['css']);
+    gulp.watch('app/js/**/*.js', ['js']);
+    gulp.watch('app/js/**/*.js', ['js']);
+
+    gulp.src('index.html')
+        .pipe($.watch('index.html'))
+        .pipe($.livereload());
+});
+
+gulp.task('webserver', function () {
+    connect.server({
+        host: 'localhost',
+        port: 9000,
+        livereload: true
+    });
+});
+
+gulp.task('js', function () {
+    browserify('./app/js/app.js', {
+            debug: true
+        })
+        .transform(to5ify)
+        .bundle()
+        .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+        .pipe(source('bundle.js'))
+        .pipe(buffer())
+        .pipe($.sourcemaps.init({
+            loadMaps: true
+        })) // loads map from browserify file
+        .pipe($.uglify())
+        .pipe($.sourcemaps.write('./')) // writes .map file
+        .pipe(gulp.dest('./build'))
+        .pipe($.livereload());
+});
+
+gulp.task('css', function () {
+    'use strict';
+    var cssFilter = $.filter(['*.css']);
+    var processors = [
+            require('postcss-assets')({
+            loadPath: './app/img'
+        }),
+            require('autoprefixer-core')({
+            browsers: ['last 2 versions', 'IE 10']
+        }),
+            require('css-mqpacker')
+            // require('csswring')
+        ];
+
+    return gulp.src('app/scss/styles.scss')
+        .pipe($.sourcemaps.init())
+        .pipe($.sass({
+            errLogToConsole: true,
+            includePaths: ['bower_components']
         }))
-        .pipe(gulp.dest('build'));
-});*/
+        .pipe($.postcss(processors))
+        .pipe($.sourcemaps.write('.'))
+        .pipe(cssFilter)
+        .pipe(cssFilter.restore())
+        .pipe($.size({
+            showFiles: true
+        }))
+        .pipe(gulp.dest('build/css'))
+        .pipe($.livereload());
+});

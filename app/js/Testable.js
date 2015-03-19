@@ -6,7 +6,7 @@ export default class Testable {
         throw this.__proto__.constructor.name + ": Setup is not implemented";
     }
 
-    isEnoughRecords () {
+    getMinimumNumberOfRecords () {
         return true;
     }
 }
