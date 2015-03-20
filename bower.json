@@ -15,7 +15,8 @@
   ],
   "dependencies": {
     "knockout.js": "~3.1.0",
-    "zepto.js": "~1.1.6"
+    "zepto.js": "~1.1.6",
+    "normalize.css": "~3.0.2"
   },
   "devDependencies": {
     "bootstrap": "~3.3.4"

@@ -1,6 +1,7 @@
 <html>
 
 <head>
+    <link href="bower_components/normalize.css/normalize.css" rel="stylesheet" type="text/css">
     <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="build/css/styles.css" rel="stylesheet" type="text/css">
     <script src="bower_components/zepto.js/dist/zepto.min.js"></script>
@@ -28,7 +29,7 @@
                                    data-bind="attr: {placeholder: config.records}">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Seed value</label>
+                            <label for="seedValue">Seed value</label>
                             <input type="number" class="form-control" id="seedValue" data-bind="attr: {placeholder: config.seed}">
                         </div>
                         <button type="submit" class="btn btn-default">Submit</button>
@@ -37,61 +38,82 @@
 
                 <fieldset class="logging">
                     <legend>Logging</legend>
+
+                    <p class="log-table-header">
+                        <span class="log-type">Type</span><span class="log-duration">Duration</span><span class="log-messgae">Message</span>
+                    </p>
+                    <article class="log-history">
+                        <table>
+
+                            <tbody data-bind="foreach: logHistory">
+                                <tr class="log-row">
+                                    <td data-bind="css: 'icon-' + ltype" class="icon icon-small log-type"></td>
+                                    <td data-bind="text: duration" class="log-duration"></td>
+                                    <td data-bind="text: message" class="log-message"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </article>
                 </fieldset>
 
                 <fieldset class="results">
                     <legend>Results</legend>
+                    <p class="icon-explained">
+                        <span class="icon icon-passed test-passed">&nbsp;Passed</span>
+                        <span class="icon icon-failed test-failed">&nbsp;Failed</span>
+                        <span class="icon icon-skipped test-skipped">&nbsp;Skipped</span>
+                    </p>
                     <div class="row-header">
                         <div class="column-group">
                             <div class="col-md-3 row-item"></div>
                             <div class="col-md-3 row-item">Select single value by</div>
                             <div class="col-md-6 row-item">
                                 <span>Select multiple values by</span>
-                                <input type="number" class="form-control select-total" />
+                                <input data-bind="value: config.multiple" type="number" class="form-control select-total" />
                             </div>
                         </div>
 
                         <div class="col-md-3 column-group">
                             <div class="col-md-5 row-item">
                                 <span>DB type</span>
-                                <input type="checkbox" class="checkbox" />
+                                <input data-bind="checked: tests.dbType" type="checkbox" class="checkbox" />
                             </div>
                             <div class="col-md-4 row-item">
                                 <span>Setup</span>
-                                <input type="checkbox" class="checkbox" />
+                                <input data-bind="checked: tests.setup" type="checkbox" class="checkbox" />
                             </div>
                             <div class="col-md-3 row-item no-border">
                                 <span>Insert</span>
-                                <input type="checkbox" class="checkbox" />
+                                <input data-bind="checked: tests.insert" type="checkbox" class="checkbox" />
                             </div>
                         </div>
                         <div class="col-md-3 column-group">
                             <div class="col-md-6 row-item">
                                 <span>Primary-Key</span>
-                                <input type="checkbox" class="checkbox" />
+                                <input data-bind="checked: tests.primaryKey" type="checkbox" class="checkbox" />
                             </div>
                             <div class="col-md-6 row-item">
                                 <span>Unique index</span>
-                                <input type="checkbox" class="checkbox" />
+                                <input data-bind="checked: tests.uniqueIndex" type="checkbox" class="checkbox" />
                             </div>
                         </div>
 
                         <div class="col-md-6 column-group">
                             <div class="col-md-3 row-item">
                                 <span>Primary key</span>
-                                <input type="checkbox" class="checkbox" />
+                                <input data-bind="checked: tests.multiPrimaryKey" type="checkbox" class="checkbox" />
                             </div>
                             <div class="col-md-3 row-item">
                                <span>Unique index</span>
-                                <input type="checkbox" class="checkbox" />
+                                <input data-bind="checked: tests.multiUniqueIndex" type="checkbox" class="checkbox" />
                             </div>
                             <div class="col-md-3 row-item">
                                 <span>Index</span>
-                                <input type="checkbox" class="checkbox" />
+                                <input data-bind="checked: tests.multiIndex" type="checkbox" class="checkbox" />
                             </div>
                             <div class="col-md-3 row-item">
                                 <span>No index</span>
-                                <input type="checkbox" class="checkbox" />
+                                <input data-bind="checked: tests.multiNoIndex" type="checkbox" class="checkbox" />
                             </div>
                         </div>
                     </div>

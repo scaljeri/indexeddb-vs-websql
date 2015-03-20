@@ -1,8 +1,9 @@
+@import "mixins/position";
+@import "mixins/size";
 @import "reset";
 @import "config-form";
 @import "results";
 @import "logging";
-
 * {
     box-sizing: border-box;
 }
@@ -17,15 +18,57 @@ body {
         float: right;
         width: 680px;
     }
-
     .results {
         float: right;
         width: calc(100% - 40px);
     }
-
     main {
         max-width: 1024px;
         margin-left: auto;
         margin-right: auto;
+    }
+}
+
+.icon {
+    &::before {
+        content: '';
+        display: inline-block;
+        background: {
+            repeat: no-repeat;
+            size: 45px;
+        }
+        overflow: hidden;
+        @include size(23px,
+        20px);
+    }
+}
+
+.icon-passed::before {
+    background: {
+        image: url(../../app/images/check-and-cross-icons.png);
+        position: -1px -7px;
+    }
+}
+
+.icon-failed::before {
+    background: {
+        image: url(../../app/images/check-and-cross-icons.png);
+        position: -24px -6px;
+    }
+}
+
+.icon-skipped::before {
+    background: {
+        image: url(../../app/images/skip-icon.png);
+        position: 0 -2px;
+        size: 24px 24px;
+    }
+}
+
+.icon-info::before {
+    background: {
+        image: url(../../app/images/info-icon.png);
+        position: 1px 0;
+        size: 21px 21px;
     }
 }

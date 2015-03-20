@@ -3,9 +3,45 @@
     border-radius: 10px;
     margin: 20px;
     padding: 20px;
+    position: relative;
     legend {
         margin-bottom: 0;
         padding-left: 10px;
+    }
+
+    .icon-explained {
+        @include position(absolute, 30px 0 0 10px);
+
+        span {
+            line-height: 20px;
+            display: inline-flex;
+            vertical-align: middle;
+        }
+
+        .icon-explained {
+            float: right;
+            .test-passed {
+                padding: 0 35px;
+                position: relative;
+                &::before {
+                    @include position(absolute, -7px 0 0 0px);
+                }
+            }
+            .test-failed {
+                padding: 0 27px;
+                position: relative;
+                &::before {
+                    @include position(absolute, -7px 0 0 0px);
+                }
+            }
+            .test-skipped {
+                padding: 0 0 0 37px;
+                position: relative;
+                &::before {
+                    @include position(absolute, -13px 0 0 0px);
+                }
+            }
+        }
     }
     .row-header {
         font-weight: 700;

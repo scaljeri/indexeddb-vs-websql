@@ -4,8 +4,64 @@
     height: 270px;
     margin: 20px;
     padding: 20px;
-
+    position: relative;
     legend {
         padding-left: 10px;
+        margin-bottom: -15px;
+    }
+
+    .log-table-header {
+        @include position(absolute, 0 0 0 30px);
+        span {
+            display: inline-block;
+            font-weight: 700;
+        }
+    }
+    tbody, .log-table-header {
+        .log-type {
+            width: 78px;
+        }
+        .log-duration {
+            width: 106px;
+        }
+        .log-message {
+            width: 110px;
+        }
+    }
+
+    .log-history {
+        background-color: #D8D8D8;
+        clear: both;
+        height: 204px;
+        margin-top: 20px;
+        padding-left: 10px;
+        position: relative;
+        overflow-y: scroll;
+        table {
+            width: 100%;
+
+            tbody {
+                .log-message {
+                    width: auto;
+
+                }
+            }
+        }
+        .log-row {
+            display: block;
+            margin: 2px 2px 2px -8px;
+            padding: 4px 8px;
+            &:nth-child(even) {
+                background-color: #D8D8D8;
+            }
+
+            &:nth-child(odd) {
+                background-color: #FAFAFA;
+            }
+        }
+
+        .icon.info {
+            width: 78px;
+        }
     }
 }
