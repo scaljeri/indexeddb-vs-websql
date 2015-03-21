@@ -8,16 +8,16 @@
         margin-bottom: 0;
         padding-left: 10px;
     }
-
+    & > section {
+        position: relative;
+    }
     .icon-explained {
-        @include position(absolute, 30px 0 0 10px);
-
+        @include position(absolute, -15px 0 0 10px);
         span {
             line-height: 20px;
             display: inline-flex;
             vertical-align: middle;
         }
-
         .icon-explained {
             float: right;
             .test-passed {
@@ -44,37 +44,50 @@
         }
     }
     .row-header {
+        border-bottom: 1px solid lightgrey;
+        display: flex;
         font-weight: 700;
-        .column-group {
-            padding-left: 0;
-            padding-right: 0;
-            border-bottom: 1px solid lightgrey;
-            overflow: hidden;
-            padding: 3px 0;
-        }
-        .row-item {
-            height: 20px;
-            text-align: center;
-            padding: 0;
-            &:nth-child(2) {
-                border-left: 1px solid lightgrey;
-            }
-            &:nth-child(3) {
-                border-left: 1px solid lightgrey;
-                border-right: 1px solid lightgrey;
-            }
-            &:last-of-type {
-                border-right: none;
-            }
-            &.no-border {
-                border-right: none;
-            }
-        }
-        .select-total {
+        margin-bottom: 2;
+        text-align: center;
+        .section-x {
             display: inline-block;
-            height: 20px;
-            padding: 0 5px;
-            width: 60px;
+            width: 150px;
+        }
+        .section-a {
+            border-right: 1px solid lightgrey;
+            flex: 2;
+            margin-bottom: 2px;
+        }
+        .section-b {
+            border-right: 1px solid lightgrey;
+            flex: 2;
+            margin-bottom: 2px;
+        }
+        .section-c {
+            flex: 4;
+            margin-bottom: 2px;
+            input {
+                display: inline-block;
+                height: 20px;
+                padding: 0 5px;
+                width: 60px;
+            }
+        }
+        &.sub-header span {
+            border-right: 1px solid lightgrey;
+            flex: 1;
+            text-align: center;
+            margin-bottom: 2px;
+            &:first-child {
+                display: inline-block;
+                flex: none;
+                width: 150px;
+            }
+            &:last-child {
+                border-right: none;
+            }
         }
     }
 }
+
+@import "results-storage";

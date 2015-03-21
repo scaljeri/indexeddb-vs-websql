@@ -43,6 +43,14 @@ body {
     }
 }
 
+.icon-progress::before {
+    background: {
+        image: url(../../app/images/ajax-loader.gif);
+        size: 20px;
+        position: 0 4px;
+    }
+}
+
 .icon-passed::before {
     background: {
         image: url(../../app/images/check-and-cross-icons.png);

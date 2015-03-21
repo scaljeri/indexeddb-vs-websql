@@ -50,65 +50,95 @@
 
                 <fieldset class="results">
                     <legend>Results</legend>
-                    <p class="icon-explained">
-                        <span class="icon icon-passed test-passed">&nbsp;Passed</span>
-                        <span class="icon icon-failed test-failed">&nbsp;Failed</span>
-                        <span class="icon icon-skipped test-skipped">&nbsp;Skipped</span>
+                    <section>
+                        <p class="icon-explained">
+                            <span class="icon icon-passed test-passed">&nbsp;Passed</span>
+                            <span class="icon icon-failed test-failed">&nbsp;Failed</span>
+                            <span class="icon icon-skipped test-skipped">&nbsp;Skipped</span>
+                        </p>
+                        <p class="row-header">
+                            <span class="section-x"></span>
+                            <span class="section-a"></span>
+                            <span class="section-b">Select single value by</span>
+                            <span class="section-c">Select multiple values by
+                            <input data-bind="value: config.multiple" type="number" class="form-control" />
+                        </span>
+                        </p>
+
+                        <p class="row-header sub-header">
+                            <span>DB type</span>
+                            <span>
+                           Setup
+                           <input data-bind="checked: tests.setup" type="checkbox" class="checkbox" />
+                        </span>
+                            <span>Insert
+                        <input data-bind="checked: tests.insert" type="checkbox" class="checkbox" />
+                        </span>
+                            <span>PK
+                        <input data-bind="checked: tests.primaryKey" type="checkbox" class="checkbox" />
+                        </span>
+                            <span>UI
+                        <input data-bind="checked: tests.uniqueIndex" type="checkbox" class="checkbox" />
+                        </span>
+                            <span>PK
+                        <input data-bind="checked: tests.multiPrimaryKey" type="checkbox" class="checkbox" />
+                        </span>
+                            <span>UI
+                        <input data-bind="checked: tests.multiUniqueIndex" type="checkbox" class="checkbox" />
+                        </span>
+                            <span>Index
+                        <input data-bind="checked: tests.multiIndex" type="checkbox" class="checkbox" />
+                        </span>
+                            <span>No index
+                        <input data-bind="checked: tests.multiNoIndex" type="checkbox" class="checkbox" />
+                        </span>
+                        </p>
+                    </section>
+
+                    <p class="storage-results">
+                            <span>
+                                <input data-bind="checked: storage.ls.checked" type="checkbox" class="checkbox-engine" />
+                                LocalStorage
+                            </span>
+                            <span data-bind="css: 'icon-' + storage.ls.tests.setup()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.ls.tests.insert()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.ls.tests.singleByPK()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.ls.tests.singleByUI()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.ls.tests.multiByPK()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.ls.tests.multiByUI()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.ls.tests.multiByI()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.ls.tests.multiByNoI()" class="icon"></span>
                     </p>
-                    <div class="row-header">
-                        <div class="column-group">
-                            <div class="col-md-3 row-item"></div>
-                            <div class="col-md-3 row-item">Select single value by</div>
-                            <div class="col-md-6 row-item">
-                                <span>Select multiple values by</span>
-                                <input data-bind="value: config.multiple" type="number" class="form-control select-total" />
-                            </div>
-                        </div>
 
-                        <div class="col-md-3 column-group">
-                            <div class="col-md-5 row-item">
-                                <span>DB type</span>
-                                <input data-bind="checked: tests.dbType" type="checkbox" class="checkbox" />
-                            </div>
-                            <div class="col-md-4 row-item">
-                                <span>Setup</span>
-                                <input data-bind="checked: tests.setup" type="checkbox" class="checkbox" />
-                            </div>
-                            <div class="col-md-3 row-item no-border">
-                                <span>Insert</span>
-                                <input data-bind="checked: tests.insert" type="checkbox" class="checkbox" />
-                            </div>
-                        </div>
-                        <div class="col-md-3 column-group">
-                            <div class="col-md-6 row-item">
-                                <span>Primary-Key</span>
-                                <input data-bind="checked: tests.primaryKey" type="checkbox" class="checkbox" />
-                            </div>
-                            <div class="col-md-6 row-item">
-                                <span>Unique index</span>
-                                <input data-bind="checked: tests.uniqueIndex" type="checkbox" class="checkbox" />
-                            </div>
-                        </div>
+                    <p class="storage-results">
+                            <span>
+                                <input data-bind="checked: storage.indexedDB.checked" type="checkbox" class="checkbox-engine" />
+                                IndexedDB
+                            </span>
+                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.setup()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.insert()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.singleByPK()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.singleByUI()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.multiByPK()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.multiByUI()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.multiByI()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.multiByNoI()" class="icon"></span>
+                    </p>
 
-                        <div class="col-md-6 column-group">
-                            <div class="col-md-3 row-item">
-                                <span>Primary key</span>
-                                <input data-bind="checked: tests.multiPrimaryKey" type="checkbox" class="checkbox" />
-                            </div>
-                            <div class="col-md-3 row-item">
-                               <span>Unique index</span>
-                                <input data-bind="checked: tests.multiUniqueIndex" type="checkbox" class="checkbox" />
-                            </div>
-                            <div class="col-md-3 row-item">
-                                <span>Index</span>
-                                <input data-bind="checked: tests.multiIndex" type="checkbox" class="checkbox" />
-                            </div>
-                            <div class="col-md-3 row-item">
-                                <span>No index</span>
-                                <input data-bind="checked: tests.multiNoIndex" type="checkbox" class="checkbox" />
-                            </div>
-                        </div>
-                    </div>
+                    <p class="storage-results">
+                            <span>
+                                <input data-bind="checked: storage.webSql.checked" type="checkbox" class="checkbox-engine" />
+                                WebSQL
+                            </span>
+                            <span data-bind="css: 'icon-' + storage.webSql.tests.setup()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.webSql.tests.insert()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.webSql.tests.singleByPK()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.webSql.tests.singleByUI()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.webSql.tests.multiByPK()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.webSql.tests.multiByUI()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.webSql.tests.multiByI()" class="icon"></span>
+                            <span data-bind="css: 'icon-' + storage.webSql.tests.multiByNoI()" class="icon"></span>
+                    </p>
                 </fieldset>
             </main>
 
@@ -164,25 +194,25 @@
 -->
             <script>
                 /*
-                                                                                                                                        function Friend(name) {
-                                                                                                                                            return {
-                                                                                                                                                name: ko.observable(name)
-                                                                                                                                            };
-                                                                                                                                        }
+                                                                                                                                                                        function Friend(name) {
+                                                                                                                                                                            return {
+                                                                                                                                                                                name: ko.observable(name)
+                                                                                                                                                                            };
+                                                                                                                                                                        }
 
-                                                                                                                                        $(function () {
-                                                                                                                                            var viewModel = {
-                                                                                                                                                firstName: ko.observable('liucas'),
-                                                                                                                                                lastName:  ko.observable('calje'),
-                                                                                                                                                friends: ko.observableArray([new Friend('Renske'), new Friend('John')])
-                                                                                                                                            };
-                                                                                                                                            viewModel.fullName = ko.dependentObservable(function () {
-                                                                                                                                                return this.firstName() + ' ' + this.lastName();
-                                                                                                                                            }, viewModel);
+                                                                                                                                                                        $(function () {
+                                                                                                                                                                            var viewModel = {
+                                                                                                                                                                                firstName: ko.observable('liucas'),
+                                                                                                                                                                                lastName:  ko.observable('calje'),
+                                                                                                                                                                                friends: ko.observableArray([new Friend('Renske'), new Friend('John')])
+                                                                                                                                                                            };
+                                                                                                                                                                            viewModel.fullName = ko.dependentObservable(function () {
+                                                                                                                                                                                return this.firstName() + ' ' + this.lastName();
+                                                                                                                                                                            }, viewModel);
 
-                                                                                                                                            ko.applyBindings(viewModel);
-                                                                                                                                        });
-                                                                                                                                        */
+                                                                                                                                                                            ko.applyBindings(viewModel);
+                                                                                                                                                                        });
+                                                                                                                                                                        */
                 /*
                 viewModel = {
                     nor: ko.observable(1000),
