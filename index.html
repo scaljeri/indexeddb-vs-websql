@@ -57,95 +57,50 @@
 
                 <fieldset class="results">
                     <legend>Results</legend>
-                    <section>
+                    <section class="results-header">
                         <p class="icon-explained">
                             <span class="icon icon-passed test-passed">&nbsp;Passed</span>
                             <span class="icon icon-failed test-failed">&nbsp;Failed</span>
                             <span class="icon icon-skipped test-skipped">&nbsp;Skipped</span>
                         </p>
-                        <p class="row-header">
-                            <span class="section-x"></span>
-                            <span class="section-a"></span>
-                            <span class="section-b">Select single value by</span>
-                            <span class="section-c">Select multiple values by
-                            <input data-bind="value: config.multiple" type="number" class="form-control" />
-                        </span>
-                        </p>
 
-                        <p class="row-header sub-header">
-                            <span>DB type</span>
-                            <span>
-                           Setup
-                           <input data-bind="checked: tests.setup" type="checkbox" class="checkbox" />
-                        </span>
-                            <span>Insert
-                        <input data-bind="checked: tests.insert" type="checkbox" class="checkbox" />
-                        </span>
-                            <span>PK
-                        <input data-bind="checked: tests.primaryKey" type="checkbox" class="checkbox" />
-                        </span>
-                            <span>UI
-                        <input data-bind="checked: tests.uniqueIndex" type="checkbox" class="checkbox" />
-                        </span>
-                            <span>PK
-                        <input data-bind="checked: tests.multiPrimaryKey" type="checkbox" class="checkbox" />
-                        </span>
-                            <span>UI
-                        <input data-bind="checked: tests.multiUniqueIndex" type="checkbox" class="checkbox" />
-                        </span>
-                            <span>Index
-                        <input data-bind="checked: tests.multiIndex" type="checkbox" class="checkbox" />
-                        </span>
-                            <span>No index
-                        <input data-bind="checked: tests.multiNoIndex" type="checkbox" class="checkbox" />
-                        </span>
-                        </p>
+                        <ol class="upper">
+                            <li></li>
+                            <li class="upper-header-single">
+                                <span>Select single value by</span>
+                            </li>
+                            <li class="upper-header-multi">
+                                <span>Select multiple values by</span>
+                                <input data-bind="value: config.multiple" type="number" class="form-control" />
+                            </li>
+                        </ol>
+
+                        <ol class="lower">
+                            <li>
+                                <span>Engine</span>
+                            </li>
+                            <!-- ko foreach: tests -->
+                                <li>
+                                    <span data-bind="text: name"></span>
+                                    <input data-bind="checked: enabled" type="checkbox" class="checkbox" />
+                                </li>
+                            <!-- /ko -->
+                        </ol>
                     </section>
 
-                    <p class="storage-results">
-                            <span>
-                                <input data-bind="checked: storage.ls.checked" type="checkbox" class="checkbox-engine" />
-                                LocalStorage
-                            </span>
-                            <span data-bind="css: 'icon-' + storage.ls.tests.setup()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.ls.tests.insert()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.ls.tests.singleByPK()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.ls.tests.singleByUI()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.ls.tests.multiByPK()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.ls.tests.multiByUI()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.ls.tests.multiByI()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.ls.tests.multiByNoI()" class="icon"></span>
-                    </p>
-
-                    <p class="storage-results">
-                            <span>
-                                <input data-bind="checked: storage.indexedDB.checked" type="checkbox" class="checkbox-engine" />
-                                IndexedDB
-                            </span>
-                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.setup()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.insert()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.singleByPK()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.singleByUI()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.multiByPK()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.multiByUI()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.multiByI()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.indexedDB.tests.multiByNoI()" class="icon"></span>
-                    </p>
-
-                    <p class="storage-results">
-                            <span>
-                                <input data-bind="checked: storage.webSql.checked" type="checkbox" class="checkbox-engine" />
-                                WebSQL
-                            </span>
-                            <span data-bind="css: 'icon-' + storage.webSql.tests.setup()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.webSql.tests.insert()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.webSql.tests.singleByPK()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.webSql.tests.singleByUI()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.webSql.tests.multiByPK()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.webSql.tests.multiByUI()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.webSql.tests.multiByI()" class="icon"></span>
-                            <span data-bind="css: 'icon-' + storage.webSql.tests.multiByNoI()" class="icon"></span>
-                    </p>
+                    <!-- ko foreach: storage -->
+                    <ol class="test-results">
+                        <li>
+                            <input data-bind="checked: enabled" type="checkbox" class="checkbox-engine" />
+                            <span data-bind="text: name"></span>
+                        </li>
+                        <!-- ko foreach: {data: $data.tests, as: 'test'} -->
+                            <li data-bind="css: 'icon-' + test.state" class="icon">
+                                <span data-bind="text: test.duration"></span>
+                            </li>
+                        <!-- /ko -->
+                    </ol>
+                    <!-- /ko -->
                 </fieldset>
             </main>
 

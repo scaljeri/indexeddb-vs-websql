@@ -28,7 +28,11 @@ body {
         margin-right: auto;
     }
 }
-
+// FORMS ELEMENTS
+input[type="checkbox"] {
+    margin: 0;
+}
+// ICONS
 .icon {
     &::before {
         content: '';

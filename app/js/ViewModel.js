@@ -1,50 +1,89 @@
 let singleton = Symbol();
 let singletonEnforcer = Symbol()
-let storageTests = ['setup', 'insert', 'singleByPK', 'singleByUI', 'multiByPK', 'multiByUI', 'multiByI', 'multiByNoI'];
 
 class ViewModel {
     constructor(enforcer) {
         if (enforcer != singletonEnforcer) throw "Cannot construct singleton";
 
+        this.tests = [
+            {
+                id: 'setup',
+                name: 'Setup',
+                enabled: true
+            },
+            {
+                id: 'insert',
+                name: 'Insert',
+                enabled: true
+            },
+            {
+                id: 'singleByPK',
+                name: 'PK',
+                enabled: true
+            },
+            {
+                id: 'singleByUI',
+                name: 'UI',
+                enabled: true
+            },
+            {
+                id: 'multiByPK',
+                name: 'PK',
+                enabled: true
+            },
+            {
+                id: 'multiByUI',
+                name: 'UI',
+                enabled: true
+            },
+            {
+                id: 'multiByI',
+                name: 'I',
+                enabled: true
+            },
+            {
+                id: 'multiByNoI',
+                name: 'No Index',
+                enabled: true
+            }
+        ];
+
+        this.storage = [
+            {
+                name: 'LocalStorage',
+                enabled: true,
+                id: 'ls',
+                tests: []//ko.observableArray([])
+            },
+            {
+                name: 'IndexedDB',
+                enabled: true,
+                id: 'indexeddb',
+                tests: []//ko.observableArray([])
+            },
+            {
+                name: 'WebSQL',
+                enabled: true,
+                id: 'websql',
+                tests: []//ko.observableArray([])
+            }
+        ];
+
+        this.storage.forEach((engine) => {
+            for(let i = 0; i < this.tests.length; i++) {
+                  engine.tests.push({
+                    state: 'passed',
+                    duration: 1.234
+                  });
+             }
+        });
+        console.dir(this.storage);
         this.results = {};
         this.logHistory = ko.observableArray();
         this.config = {
             records: ko.observable(1000),
             seed: ko.observable(2345678901),
             multiple: ko.observable(10)
-        };
-        this.storage = {
-            ls: {
-                checked: ko.observable(true),
-                tests: {}
-            },
-            indexedDB: {
-                checked: ko.observable(true),
-                tests: {}
-            },
-            webSql: {
-                checked: ko.observable(true),
-                tests: {}
-            }
-        };
-
-        storageTests.forEach((name) => {
-             this.storage.ls.tests[name] = ko.observable('passed');
-             this.storage.indexedDB.tests[name] = ko.observable('failed');
-             this.storage.webSql.tests[name] = ko.observable('progress');
-        });
-        this.tests = {
-            dbType: ko.observable(true),
-            setup: ko.observable(true),
-            insert: ko.observable(true),
-
-            primaryKey: ko.observable(true),
-            uniqueIndex: ko.observable(true),
-
-            multiPrimaryKey: ko.observable(true),
-            multiUniqueIndex: ko.observable(true),
-            multiIndex: ko.observable(true),
-            multiNoIndex: ko.observable(true),
         };
     }
 
