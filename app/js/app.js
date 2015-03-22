@@ -8,9 +8,14 @@ class View {
     setup() {
         Log.instance.info(null, 'Ready to go');
 
-        $('.config-form form').submit((event) => {
+        $('[run-tests]').click((event) => {
             event.preventDefault();
             TestRunner.instance.run();
+        });
+
+        $('[download-data]').click((event) => {
+            event.preventDefault();
+            console.log('download');
         });
     }
 }
