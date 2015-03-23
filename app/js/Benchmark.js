@@ -23,6 +23,6 @@ export default class Benchmark {
         let sd = startDate;
         startDate = null;
 
-        return Math.round((new Date() - sd) / 10) / 100;
+        return Math.round((new Date() - sd) / 1) / 1000;
     }
 }
