@@ -1,7 +1,7 @@
 .logging {
     border: 2px solid grey;
     border-radius: 10px;
-    height: 270px;
+    height: 280px;
     margin: 20px;
     padding: 20px;
     position: relative;
@@ -32,7 +32,7 @@
     .log-history {
         background-color: #D8D8D8;
         clear: both;
-        height: 204px;
+        height: 212px;
         margin-top: 20px;
         padding-left: 10px;
         position: relative;
@@ -52,7 +52,7 @@
             margin: 2px 2px 2px -8px;
             padding: 4px 8px;
             &:nth-child(even) {
-                background-color: #D8D8D8;
+                background-color: darken(#FAFAFA, 5%);
             }
 
             &:nth-child(odd) {

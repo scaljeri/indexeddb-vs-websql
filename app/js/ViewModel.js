@@ -72,13 +72,13 @@ class ViewModel {
         this.storage.forEach((engine) => {
             for(let i = 0; i < this.tests.length; i++) {
                   engine.tests.push({
-                    state: 'passed',
-                    duration: 1.234
+                    state: null,
+                    duration: null
                   });
              }
         });
-        console.dir(this.storage);
-        this.results = {};
+
+        this.results = {}; // TODO ????
         this.logHistory = ko.observableArray();
         this.config = {
             records: ko.observable(1000),
