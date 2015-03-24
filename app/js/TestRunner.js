@@ -6,7 +6,6 @@ import IDB from './IDB';
 import WebSql from './WebSql';
 import LS from './LS';
 
-let generator = Generator.instance;
 let callable = Function.bind.bind(Function.call);
 
 let singleton = Symbol();
@@ -22,6 +21,36 @@ new Benchmark().start(callable(IDB.prototype.setup, this.idb, {
     Log.instance.info(10, 'hello');
 });
 */
+
+function validateStorage(dataSize) {
+    "use strict";
+
+    let vm = ViewModel.instance;
+
+    if (vm.storage[0].enabled() && !LS.isAvailable()) {
+        Log.error(null, 'This browser does not support LocalStorage');
+        vm.storage[0].enabled(false);
+    }
+    else if (dataSize > 5) {
+        Log.warn(null, 'The amount of data might be to for LocalStorage!!');
+    }
+
+    if (vm.storage[1].enabled() && !IDB.isAvailable()) {
+        Log.error(null, 'This browser does not support IndexedDB');
+        vm.storage[1].enabled(false);
+    }
+
+    if (vm.storage[2].enabled() && !WebSql.isAvailable()) {
+        Log.error(null, 'This browser does not support WebSQL');
+        vm.storage[2].enabled(false);
+    }
+
+    if (!vm.storage[0].enabled() && !vm.storage[1].enabled() && !vm.storage[2].enabled() ) {
+        Log.warn(null, 'Ooops, no engine is checked!!!');
+        return false;
+    }
+
+}
 
 class TestRunner {
 
@@ -43,22 +72,38 @@ class TestRunner {
 
         if (!testData || this.seed !== settings.seed() || this.records !== parseInt(settings.records())) {
             this.seed = settings.seed();
-            this.records = settings.records();
+            this.records = parseInt(settings.records());
 
-            Benchmark.start();
-            testData = generator.create(settings.records(), settings.seed());
-            Log.info(Benchmark.end(), `Created ${this.records} records`);
+            let bm = new Benchmark().start();
+            testData = Generator.create(settings.records(), settings.seed(), settings.multiple());
+
+            let size = this.dataSize = (sizeof(testData.records[0]) * testData.records.length) / 1024 / 1024,
+                units = 'MB';
+
+            if (size < 1000) {
+                size *= 1024;
+                units = 'KB';
+            }
+            Log.info(bm.end(), `Created ${this.records} records (${Math.round(size) + units})`);
         }
 
         return testData;
     }
 
     run() {
-        let idb = new IDB();
-        let wsql = new WebSql();
-        let ls = new LS();
+        let storage = {
+            indexeddb: new IDB(),
+            websql: new WebSql(),
+            ls: new LS()
+            };
         let vm = ViewModel.instance;
         let tests = vm.tests;
+        let data = this.data;
+        let bm = new Benchmark().start();
+
+        if (validateStorage(this.dataSize)) {
+            // TODO: continue
+        }
 
         /*
         tests.forEach((test) => {

@@ -6,7 +6,8 @@ export default class Testable {
         throw this.__proto__.constructor.name + ": Setup is not implemented";
     }
 
-    getMinimumNumberOfRecords () {
-        return true;
+    static isAvailable() {
+        "use strict";
+        return false;
     }
 }

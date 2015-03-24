@@ -89,3 +89,11 @@ input[type="checkbox"] {
         size: 21px 21px;
     }
 }
+
+.icon-warn::before {
+    background: {
+        image: url(../../app/images/warn-icon.png);
+        position: 0 -2px;
+        size: 24px 24px;
+    }
+}

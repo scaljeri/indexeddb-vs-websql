@@ -5,24 +5,27 @@ let startDate;
 export default class Benchmark {
     constructor() {}
 
-    static start(callable, cb) {
-        startDate = new Date();
+    // If `callable` is defined, cb is not optional. Furthermore this.end is called too!
+    start(callable, cb) {
+        this.startDate = new Date();
 
         if (callable) {
             callable((output) => {
-                cb(new Date() - start, output);
+                cb(this.end(), output);
             });
         }
+
+        return this;
     }
 
-    static end() {
-        if (!startDate) {
+    end() {
+        if (!this.startDate) {
             throw 'Benchmark `end` called without a `start` call!';
         }
 
-        let sd = startDate;
-        startDate = null;
+        let amount = new Date() - this.startDate;
+        this.startDate = null;
 
-        return Math.round((new Date() - sd) / 1) / 1000;
+        return Math.round(amount/1) / 1000;
     }
 }

@@ -10,6 +10,11 @@ class Log {
         this.create('debug', msg, duration);
     }
 
+    static warn(msg, duration) {
+        "use strict";
+        this.create('warn', msg, duration);
+    }
+
     static error(msg, duration) {
         this.create('error', msg, duration);
     }

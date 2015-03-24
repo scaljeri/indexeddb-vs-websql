@@ -51,19 +51,19 @@ class ViewModel {
         this.storage = [
             {
                 name: 'LocalStorage',
-                enabled: true,
+                enabled: ko.observable(true),
                 id: 'ls',
                 tests: []//ko.observableArray([])
             },
             {
                 name: 'IndexedDB',
-                enabled: true,
+                enabled: ko.observable(true),
                 id: 'indexeddb',
                 tests: []//ko.observableArray([])
             },
             {
                 name: 'WebSQL',
-                enabled: true,
+                enabled: ko.observable(true),
                 id: 'websql',
                 tests: []//ko.observableArray([])
             }
