@@ -3,17 +3,30 @@
 import Testable from './Testable';
 
 export default class LS extends Testable {
-    constructor(options = {dbname: 'idb-test', store: 'customers'}) {
-        super(options);
-
-        this.dbname = options.dbname;
-        this.store = options.store;
-    }
+    constructor() {}
 
     static isAvailable() {
         return typeof(Storage) !== void(0);
     }
 
-    setup() {
+    setup(cb) {
+        localStorage.clear();
+        cb();
+    }
+
+    insert(records, cb) {
+       try {
+           records.forEach((record) => {
+               localStorage.setItem(record.ssn, JSON.stringify(record)) ;
+           });
+           cb();
+       } catch (e) {
+            cb({status: 'error', msg: e.message});
+       }
+    }
+
+    selectByPK(key, cb) {
+        let record = localStorage.getItem(key) ;
+        cb(record);
     }
 }

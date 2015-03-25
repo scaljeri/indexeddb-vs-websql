@@ -22,34 +22,42 @@ let testData = null;
  });
  */
 
-function validateStorage(dataSize) {
+function setup(engine, data, log, cb) {
     "use strict";
 
-    let vm = ViewModel.instance;
-    let log = new Log();
+    let benchmark = new Benchmark().start();
+    engine.setup((output) => {
+        if (output) {
+            // TODO
+            throw 'TODO'
+        }
+        else {
+            log.info('Setup done', benchmark.end());
+            insert(engine, data, log, cb);
+        }
+    })
+}
 
-    if (vm.storage[0].enabled() && !LS.isAvailable()) {
-        log.error('This browser does not support LocalStorage');
-        vm.storage[0].enabled(false);
-    }
-    else if (dataSize > 5) {
-        log.warn('The amount of data might be to big for LocalStorage!!');
-    }
+function insert(engine, data, log, cb) {
+    "use strict";
 
-    if (vm.storage[1].enabled() && !IDB.isAvailable()) {
-        log.error('This browser does not support IndexedDB');
-        vm.storage[1].enabled(false);
-    }
+    let benchmark = new Benchmark().start();
+    debugger;
+    log.busy('Inserting records');
+    engine.insert(data.records, (output) => {
+        if (output) {
+            if (output.status === 'error') {
+                log.amend('error', `Insert - ${output.msg}`, benchmark.end());
+                //log.error(`Insert - ${output.msg}`, benchmark.end());
+                cb(false);
+            }
+        }
+        else {
+            log.info('Inserted all records', benchmark.end());
+            cb(true);
+        }
+    })
 
-    if (vm.storage[2].enabled() && !WebSql.isAvailable()) {
-        log.error('This browser does not support WebSQL');
-        vm.storage[2].enabled(false);
-    }
-
-    if (!vm.storage[0].enabled() && !vm.storage[1].enabled() && !vm.storage[2].enabled()) {
-        log.warn('Ooops, no engine is checked!!!');
-        return false;
-    }
 
 }
 
@@ -78,6 +86,7 @@ class TestRunner {
             let log = new Log(),
                 bm = new Benchmark();
 
+            debugger;
             log.busy(`Creating ${this.records} records`, true);
             bm.start();
 
@@ -86,41 +95,50 @@ class TestRunner {
             w.onmessage = (event) => {
                 "use strict";
                 let testData = event.data;
-                let size = this.dataSize = (sizeof(testData.records.slice(0,100)) * testData.records.length/100) / 1024 / 1024,
+                let size = (sizeof(testData.records.slice(0, 100)) * testData.records.length / 100) / 1024 / 1024,
                     units = 'MB';
 
                 if (size < 1) {
                     size *= 1024;
                     units = 'KB';
                 }
-                log.amend(`Created ${this.records} records (${Math.round(size * 100)/100 + units})`, 'info', bm.end());
+                log.amend(`Created ${this.records} records (${Math.round(size * 100) / 100 + units})`, 'info', bm.end());
                 cb(testData);
             };
             w.postMessage([settings.records(), settings.seed(), settings.multiple()]);
-            cb()
-
-
         }
 
         return testData;
     }
 
     run(cb) {
-        let storage = {
+        let engines = {
+            ls: new LS(),
             indexeddb: new IDB(),
-            websql: new WebSql(),
-            ls: new LS()
+            websql: new WebSql()
         };
         let vm = ViewModel.instance;
         let tests = vm.tests;
         let bm = new Benchmark().start();
 
-        this.getData(() => {
+        this.getData((data) => {
             "use strict";
 
-            if (validateStorage(this.dataSize)) {
-                // TODO: continue
-            }
+            vm.engines().filter((engine) => {
+                return engine.checked() && !engine.disabled();
+            }).forEach((engine) => {
+                let log = new Log(engine.name);
+
+                setup(engines[engine.id], data, log, (output) => {
+                    if (output) {
+                        log.info('Tests successful', bm.end());
+                    }
+                    else {
+                        log.info('Test failed', bm.end());
+                    }
+                    cb();
+                })
+            });
         });
 
         /*
@@ -138,11 +156,6 @@ class TestRunner {
         //let data = Generator.instance.
         console.log('TEST GO');
     }
-
-    setup() {
-        alert('x');
-    }
-
 }
 
 export default TestRunner

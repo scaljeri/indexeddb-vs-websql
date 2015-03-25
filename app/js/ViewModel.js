@@ -48,28 +48,31 @@ class ViewModel {
             }
         ];
 
-        this.storage = [
+        this.engines = ko.observableArray([
             {
                 name: 'LocalStorage',
-                enabled: ko.observable(true),
+                checked: ko.observable(true),
+                disabled: ko.observable(true), // TRUE if storage engine is not supported by the browser
                 id: 'ls',
                 tests: []//ko.observableArray([])
             },
             {
                 name: 'IndexedDB',
-                enabled: ko.observable(true),
+                checked: ko.observable(true),
+                disabled: ko.observable(true),
                 id: 'indexeddb',
                 tests: []//ko.observableArray([])
             },
             {
                 name: 'WebSQL',
-                enabled: ko.observable(true),
+                checked: ko.observable(true),
+                disabled: ko.observable(true),
                 id: 'websql',
                 tests: []//ko.observableArray([])
             }
-        ];
+        ]);
 
-        this.storage.forEach((engine) => {
+        this.engines().forEach((engine) => {
             for(let i = 0; i < this.tests.length; i++) {
                   engine.tests.push({
                     state: null,

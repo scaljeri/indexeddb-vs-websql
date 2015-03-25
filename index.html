@@ -49,7 +49,7 @@
                                 <tr class="log-row">
                                     <td data-bind="css: 'icon-' + ltype()" class="icon icon-small log-type"></td>
                                     <td data-bind="text: duration" class="log-duration"></td>
-                                    <td data-bind="text: message" class="log-message"></td>
+                                    <td data-bind="html: message" class="log-message"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -89,19 +89,23 @@
                         </ol>
                     </section>
 
-                    <!-- ko foreach: storage -->
-                    <ol class="test-results">
-                        <li>
-                            <input data-bind="checked: enabled" type="checkbox" class="checkbox-engine" />
-                            <span data-bind="text: name"></span>
-                        </li>
-                        <!-- ko foreach: {data: $data.tests, as: 'test'} -->
-                            <li data-bind="css: 'icon-' + test.state" class="icon">
-                                <span data-bind="text: test.duration"></span>
+                        <!-- ko foreach: engines -->
+                    <section class="engine-results">
+                        <ol class="tests">
+                            <li>
+                                <input data-bind="checked: checked" type="checkbox" class="checkbox-engine" />
+                                <span data-bind="text: name"></span>
                             </li>
+
+                            <!-- ko foreach: {data: $data.tests, as: 'test'} -->
+                                <li data-bind="css: 'icon-' + test.state" class="icon">
+                                    <span data-bind="text: test.duration"></span>
+                                </li>
+                            <!-- /ko -->
+                        </ol>
+                        <div data-bind="css: 'engine-' + !disabled()"  class="disabled-tests"></div>
+                    </section>
                         <!-- /ko -->
-                    </ol>
-                    <!-- /ko -->
                 </fieldset>
             </main>
 
