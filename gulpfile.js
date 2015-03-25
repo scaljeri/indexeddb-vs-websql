@@ -32,21 +32,8 @@ gulp.task('webserver', function () {
 });
 
 gulp.task('js', function () {
-    browserify('./app/js/app.js', {
-            debug: true
-        })
-        .transform(to5ify)
-        .bundle()
-        .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-        .pipe(source('bundle.js'))
-        .pipe(buffer())
-        .pipe($.sourcemaps.init({
-            loadMaps: true
-        })) // loads map from browserify file
-        //.pipe($.uglify())
-        .pipe($.sourcemaps.write('./')) // writes .map file
-        .pipe(gulp.dest('./build'))
-        .pipe($.livereload());
+    es6ToEs5('./app/js/app.js', 'bundle.js');
+    es6ToEs5('./app/js/data-worker.js', 'data-worker.js');
 });
 
 gulp.task('css', function () {
@@ -79,3 +66,24 @@ gulp.task('css', function () {
         .pipe(gulp.dest('build/css'))
         .pipe($.livereload());
 });
+
+function es6ToEs5(fileName, outputName) {
+    "use strict";
+
+    browserify(fileName, {
+        debug: true
+    })
+        .transform(to5ify)
+        .bundle()
+        .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+        .pipe(source(outputName))
+        .pipe(buffer())
+        .pipe($.sourcemaps.init({
+            loadMaps: true
+        })) // loads map from browserify file
+        //.pipe($.uglify())
+        .pipe($.sourcemaps.write('./')) // writes .map file
+        .pipe(gulp.dest('./build'))
+        .pipe($.livereload());
+
+}

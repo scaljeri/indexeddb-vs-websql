@@ -13,40 +13,41 @@ let singletonEnforcer = Symbol();
 let testData = null;
 
 /*
-this.idb = new IDB();
-new Benchmark().start(callable(IDB.prototype.setup, this.idb, {
-    x: 10
-}), (duration) => {
-    console.log('duration=' + duration);
-    Log.instance.info(10, 'hello');
-});
-*/
+ this.idb = new IDB();
+ new Benchmark().start(callable(IDB.prototype.setup, this.idb, {
+ x: 10
+ }), (duration) => {
+ console.log('duration=' + duration);
+ Log.instance.info(10, 'hello');
+ });
+ */
 
 function validateStorage(dataSize) {
     "use strict";
 
     let vm = ViewModel.instance;
+    let log = new Log();
 
     if (vm.storage[0].enabled() && !LS.isAvailable()) {
-        Log.error(null, 'This browser does not support LocalStorage');
+        log.error('This browser does not support LocalStorage');
         vm.storage[0].enabled(false);
     }
     else if (dataSize > 5) {
-        Log.warn(null, 'The amount of data might be to for LocalStorage!!');
+        log.warn('The amount of data might be to big for LocalStorage!!');
     }
 
     if (vm.storage[1].enabled() && !IDB.isAvailable()) {
-        Log.error(null, 'This browser does not support IndexedDB');
+        log.error('This browser does not support IndexedDB');
         vm.storage[1].enabled(false);
     }
 
     if (vm.storage[2].enabled() && !WebSql.isAvailable()) {
-        Log.error(null, 'This browser does not support WebSQL');
+        log.error('This browser does not support WebSQL');
         vm.storage[2].enabled(false);
     }
 
-    if (!vm.storage[0].enabled() && !vm.storage[1].enabled() && !vm.storage[2].enabled() ) {
-        Log.warn(null, 'Ooops, no engine is checked!!!');
+    if (!vm.storage[0].enabled() && !vm.storage[1].enabled() && !vm.storage[2].enabled()) {
+        log.warn('Ooops, no engine is checked!!!');
         return false;
     }
 
@@ -67,55 +68,72 @@ class TestRunner {
         return this[singleton];
     }
 
-    get data() {
+    getData(cb) {
         let settings = ViewModel.instance.config;
 
         if (!testData || this.seed !== settings.seed() || this.records !== parseInt(settings.records())) {
-            this.seed = settings.seed();
+            this.seed = parseInt(settings.seed());
             this.records = parseInt(settings.records());
 
-            let bm = new Benchmark().start();
-            testData = Generator.create(settings.records(), settings.seed(), settings.multiple());
+            let log = new Log(),
+                bm = new Benchmark();
 
-            let size = this.dataSize = (sizeof(testData.records[0]) * testData.records.length) / 1024 / 1024,
-                units = 'MB';
+            log.busy(`Creating ${this.records} records`, true);
+            bm.start();
 
-            if (size < 1000) {
-                size *= 1024;
-                units = 'KB';
-            }
-            Log.info(bm.end(), `Created ${this.records} records (${Math.round(size) + units})`);
+            // Start WebWorker
+            let w = new Worker("build/data-worker.js");
+            w.onmessage = (event) => {
+                "use strict";
+                let testData = event.data;
+                let size = this.dataSize = (sizeof(testData.records.slice(0,100)) * testData.records.length/100) / 1024 / 1024,
+                    units = 'MB';
+
+                if (size < 1) {
+                    size *= 1024;
+                    units = 'KB';
+                }
+                log.amend(`Created ${this.records} records (${Math.round(size * 100)/100 + units})`, 'info', bm.end());
+                cb(testData);
+            };
+            w.postMessage([settings.records(), settings.seed(), settings.multiple()]);
+            cb()
+
+
         }
 
         return testData;
     }
 
-    run() {
+    run(cb) {
         let storage = {
             indexeddb: new IDB(),
             websql: new WebSql(),
             ls: new LS()
-            };
+        };
         let vm = ViewModel.instance;
         let tests = vm.tests;
-        let data = this.data;
         let bm = new Benchmark().start();
 
-        if (validateStorage(this.dataSize)) {
-            // TODO: continue
-        }
+        this.getData(() => {
+            "use strict";
+
+            if (validateStorage(this.dataSize)) {
+                // TODO: continue
+            }
+        });
 
         /*
-        tests.forEach((test) => {
-            if (this[test.id]) {
-                if (this[test.id].enabled) {
-                    ;//Benchmark
+         tests.forEach((test) => {
+         if (this[test.id]) {
+         if (this[test.id].enabled) {
+         ;//Benchmark
 
-                }
-            } else {
-                throw 'Test "' + test.name + '" not implemented';
-            }
-        }); */
+         }
+         } else {
+         throw 'Test "' + test.name + '" not implemented';
+         }
+         }); */
 
         //let data = Generator.instance.
         console.log('TEST GO');

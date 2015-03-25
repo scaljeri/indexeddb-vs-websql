@@ -47,7 +47,7 @@
 
                             <tbody data-bind="foreach: logHistory">
                                 <tr class="log-row">
-                                    <td data-bind="css: 'icon-' + ltype" class="icon icon-small log-type"></td>
+                                    <td data-bind="css: 'icon-' + ltype()" class="icon icon-small log-type"></td>
                                     <td data-bind="text: duration" class="log-duration"></td>
                                     <td data-bind="text: message" class="log-message"></td>
                                 </tr>

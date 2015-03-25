@@ -6,13 +6,24 @@ import WebSql from './WebSql';
 import LS from './LS';
 
 class View {
-    constructor(options) {}
+    constructor(options) {
+    }
 
     setup() {
         $('[run-tests]').click((event) => {
             event.preventDefault();
 
-            TestRunner.instance.run();
+            if (!this.busy) {
+                this.busy = true;
+
+                TestRunner.instance.run(() => {
+                    "use strict";
+                    this.busy = false;
+                });
+            }
+            else {
+                new Log().warn(null, 'In progress already! Please wait!');
+            }
         });
 
         $('[download-data]').click((event) => {
@@ -20,7 +31,7 @@ class View {
             console.log('download');
         });
 
-        Log.info(null, 'Ready to go!')
+        new Log().info('Ready to go!');
     }
 }
 
