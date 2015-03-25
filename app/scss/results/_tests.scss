@@ -1,0 +1,32 @@
+.test-results {
+    list-style-type: none;
+    border-bottom: 1px solid lightgrey;
+    display: flex;
+    //font-weight: 700;
+    padding: 0;
+    margin-bottom: 2;
+    text-align: center;
+
+    & > li {
+        border-right: 1px solid lightgrey;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        text-align: center;
+        margin: 10px 0;
+        &:first-child {
+            justify-content: flex-start;
+            flex: none;
+            width: 150px;
+            padding-left: 20px;
+            text-align: left;
+        }
+        &:last-child {
+            border-right: none;
+        }
+        & > span {
+            margin-left: 5px;
+        }
+    }
+}
