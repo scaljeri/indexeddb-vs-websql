@@ -47,8 +47,7 @@ function insert(engine, data, log, cb) {
     engine.insert(data.records, (output) => {
         if (output) {
             if (output.status === 'error') {
-                log.amend('error', `Insert - ${output.msg}`, benchmark.end());
-                //log.error(`Insert - ${output.msg}`, benchmark.end());
+                log.error(`Insert - ${output.msg}`, benchmark.end());
                 cb(false);
             }
         }
