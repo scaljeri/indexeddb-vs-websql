@@ -85,7 +85,6 @@ class TestRunner {
             let log = new Log(),
                 bm = new Benchmark();
 
-            debugger;
             log.busy(`Creating ${this.records} records`, true);
             bm.start();
 
@@ -126,7 +125,7 @@ class TestRunner {
             vm.engines().filter((engine) => {
                 return engine.checked() && !engine.disabled();
             }).forEach((engine) => {
-                let log = new Log(engine.name);
+                let log = new Log({prefix: engine.name});
 
                 setup(engines[engine.id], data, log, (output) => {
                     if (output) {

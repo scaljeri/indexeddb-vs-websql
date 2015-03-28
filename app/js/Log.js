@@ -2,9 +2,12 @@ import ViewModel from './ViewModel';
 
 class Log {
 
-    constructor(prefix) {
+    constructor(setup={removable: true, prefix: null}) {
         "use strict";
-        this.prefix = prefix;
+        this.setup = {
+            removable: typeof setup.removable === 'undefined' ? true : setup.removable,
+            prefix: setup.prefix
+        };
     }
 
     /*
@@ -57,7 +60,7 @@ class Log {
             throw 'This log instance is still busy!!';
         }
 
-        this.create('busy', msg);
+        this.create('busy', msg, timer ? 0 : null);
         this.isBusy = true;
         if (timer) {
             this.startTime = new Date();
@@ -104,17 +107,27 @@ class Log {
         var item = {
             ltype: ko.observable(ltype || 'info'),
             duration: ko.observable(typeof duration === 'number' ? `${duration}s` : (!ltype ? '' : '-')),
-            message: ko.observable(this.getPrefix() + msg)
+            message: ko.observable(this.getPrefix() + msg),
+            removable: this.setup.removable
         };
         ViewModel.instance.logHistory.unshift(item);
 
         return item;
     }
 
+    // Removes all log history except for those items where: removeable === false
     static clear() {
         "use strict";
+        let history = ViewModel.instance.logHistory();
 
-        ViewModel.instance.logHistory.removeAll();
+        for(let i = history.length -1; i >= 0; i--) {
+            if (history[i].removable) {
+                history.splice(i, 1);
+            }
+        }
+
+        //ViewModel.instance.logHistory.removeAll();
+        debugger;
     }
 }
 

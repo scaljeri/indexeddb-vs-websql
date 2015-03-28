@@ -15,7 +15,7 @@ class View {
                 indexeddb: IDB,
                 websql: WebSql
             },
-            log = new Log();
+            log = new Log({removable: false});
 
         for (let i = vm.engines().length - 1; i >= 0; i--) {
             if (!refs[vm.engines()[i].id].isAvailable()) {
@@ -24,6 +24,7 @@ class View {
                 vm.engines()[i].disabled(false);
             }
         }
+        log.info('Ready to go');
     }
 
     setup() {
@@ -34,7 +35,6 @@ class View {
                 this.busy = true;
 
                 Log.clear();
-                new Log().info('Ready to go!');
 
                 TestRunner.instance.run(() => {
                     "use strict";
@@ -50,8 +50,6 @@ class View {
             event.preventDefault();
             console.log('download');
         });
-
-        new Log().info('Ready to go!');
     }
 }
 
