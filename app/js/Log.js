@@ -38,7 +38,7 @@ class Log {
 
             if (typeof duration === 'number') {
                 this.done();
-                this.lastMsg.duration(duration);
+                this.lastMsg.duration(`${duration}s`);
                 this.pending = null;
             }
 
@@ -73,7 +73,7 @@ class Log {
 
     getPrefix() {
         "use strict";
-        return this.prefix ? `<strong>${this.prefix}</strong>: ` : '';
+        return this.setup.prefix ? `<strong>${this.setup.prefix}</strong>: ` : '';
     }
 
     create(ltype, msg, duration) {
@@ -118,6 +118,7 @@ class Log {
     // Removes all log history except for those items where: removeable === false
     static clear() {
         "use strict";
+
         let history = ViewModel.instance.logHistory();
 
         for(let i = history.length -1; i >= 0; i--) {
@@ -125,9 +126,6 @@ class Log {
                 history.splice(i, 1);
             }
         }
-
-        //ViewModel.instance.logHistory.removeAll();
-        debugger;
     }
 }
 

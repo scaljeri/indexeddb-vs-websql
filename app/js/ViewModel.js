@@ -74,11 +74,11 @@ class ViewModel {
 
         this.engines().forEach((engine) => {
             for(let i = 0; i < this.tests.length; i++) {
-                  engine.tests.push({
-                    state: null,
-                    duration: null
-                  });
-             }
+                engine.tests.push({
+                    state: ko.observable(),
+                    duration: ko.observable()
+                });
+            }
         });
 
         this.results = {}; // TODO ????
@@ -88,6 +88,17 @@ class ViewModel {
             seed: ko.observable(2345678901),
             multiple: ko.observable(10)
         };
+    }
+
+    clearTestData() {
+        "use strict";
+
+        this.engines().forEach((engine) => {
+            for(let i = 0; i < this.tests.length; i++) {
+                engine.tests[i].state(null);
+                engine.tests[i].duration(null);
+            }
+        });
     }
 
     static get instance() {

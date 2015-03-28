@@ -78,18 +78,37 @@ class Generator {
         let name;
         while (records > data.length) {
             data.push({
-                ssn: generateSSN(rand),
-                name: (name = names[rand.get(16, 0)]),
-                email: name + '@' + generateString(5, rand) + '.' + generateString(3, rand),
-                age: rand.get(100)
+                ssn: generateSSN(rand), // PK
+                name: (name = names[rand.get(16, 0)]), // I
+                email: name + '@' + generateString(5, rand) + '.' + generateString(3, rand), // UI
+                age: rand.get(100) // No I
             });
         }
+
+        // Choose 4 different records
+        let indices = [];
+        for(let i = 0; i < 4; i++) {
+            let randVal, length = indices.length;
+            while (indices.length === length) {
+                randVal = rand.get(data.length-1);
+                if (indices.indexOf(randVal) === -1) {
+                    indices.push(randVal);
+                }
+            }
+        }
+
+        output.single = {
+            pk: data[indices[0]].ssn,
+            ui: data[indices[1]].email,
+            i: data[indices[2]].name,
+            noi: data[indices[3]].age
+        };
 
         output.bounds = {
             ssn: defineBoundsBy(data, 'ssn', boundMatches, rand),
             email: defineBoundsBy(data, 'email', boundMatches, rand),
             name: defineBoundsBy(data, 'name', boundMatches, rand),
-            age: defineBoundsBy(data, 'age', boundMatches, rand),
+            age: defineBoundsBy(data, 'age', boundMatches, rand)
         };
         output.records = shuffleArray(data, rand);
 

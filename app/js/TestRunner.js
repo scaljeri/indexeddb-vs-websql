@@ -1,6 +1,7 @@
 import ViewModel from './ViewModel';
 import Generator from './Generator';
 import Benchmark from './Benchmark';
+import State from './State';
 import Log from './Log';
 import IDB from './IDB';
 import WebSql from './WebSql';
@@ -21,44 +22,41 @@ let testData = null;
  Log.instance.info(10, 'hello');
  });
  */
+let messages = {
+    setup: {
+        passed: 'Setup done'
+    },
+    insert: {
+        busy: 'Inserting records',
+        error: 'Insert',
+        passed: 'Inserted all records'
+    },
+    singleByPK: {
+        error: 'Primary Key record not found',
+        passed: 'Primary Key record found'
+    },
+    singleByUI: {
+        error: 'Unique Index record not found',
+        passed: 'Unique Index record found'
+    },
+    multiByPK: {
+        error: 'Primary Key records not found',
+        passed: 'Primary Key records found'
+    },
+    multiByUI: {
+        error: 'Unique Index records not found',
+        passed: 'Unique Index records found'
+    },
+    multiByI: {
+        error: 'Records not found by Index',
+        passed: 'Records not found by Index'
+    },
+    multiByNoI: {
+        error: 'Records not found using no Index',
+        passed: 'Records not found using no Index'
+    }
+};
 
-function setup(engine, data, log, cb) {
-    "use strict";
-
-    let benchmark = new Benchmark().start();
-    engine.setup((output) => {
-        if (output) {
-            // TODO
-            throw 'TODO'
-        }
-        else {
-            log.info('Setup done', benchmark.end());
-            insert(engine, data, log, cb);
-        }
-    })
-}
-
-function insert(engine, data, log, cb) {
-    "use strict";
-
-    let benchmark = new Benchmark().start();
-    debugger;
-    log.busy('Inserting records');
-    engine.insert(data.records, (output) => {
-        if (output) {
-            if (output.status === 'error') {
-                log.error(`Insert - ${output.msg}`, benchmark.end());
-                cb(false);
-            }
-        }
-        else {
-            log.info('Inserted all records', benchmark.end());
-            cb(true);
-        }
-    })
-
-
-}
 
 class TestRunner {
 
@@ -122,38 +120,79 @@ class TestRunner {
         this.getData((data) => {
             "use strict";
 
-            vm.engines().filter((engine) => {
+            let filtered = vm.engines().filter((engine) => {
                 return engine.checked() && !engine.disabled();
-            }).forEach((engine) => {
-                let log = new Log({prefix: engine.name});
-
-                setup(engines[engine.id], data, log, (output) => {
-                    if (output) {
-                        log.info('Tests successful', bm.end());
-                    }
-                    else {
-                        log.info('Test failed', bm.end());
-                    }
-                    cb();
-                })
             });
+
+            if (filtered && filtered.length > 0) {
+                filtered.forEach((engine) => {
+                    let log = new Log({prefix: engine.name}),
+                        state = new State(engine, engines[engine.id]);
+
+                    this.performTest([state.getTest().id], state, log, data, (output) => {
+                        if (output) {
+                            log.info('Tests successful', bm.end());
+                        }
+                        else {
+                            log.error('Test failed', bm.end());
+                        }
+                        cb();
+                    });
+                });
+            } else {
+                new Log().warn('Not storage engines enabled for testing');
+            }
         });
+    }
 
-        /*
-         tests.forEach((test) => {
-         if (this[test.id]) {
-         if (this[test.id].enabled) {
-         ;//Benchmark
+    performTest(test, state, log, data, cb) {
+        "use strict";
 
-         }
-         } else {
-         throw 'Test "' + test.name + '" not implemented';
-         }
-         }); */
+        state.startTest();
 
-        //let data = Generator.instance.
-        console.log('TEST GO');
+        if (state.isTestAvailable()) {
+            let benchmark = new Benchmark().start();
+            if (messages[test].busy) {
+                log.busy(messages[test].busy);
+            }
+
+            state.getEngine()[test](data, (output) => {
+                let duration = benchmark.end();
+
+                if (output) {
+                    if (output.status === 'error') {
+                        log.error(`${messages[test].error} - ${output.msg}`, duration);
+                        state.endTest('failed', duration);
+                        return cb(false);
+                    } else if (output.status === 'skip') {
+                        //log.info(`${state.getTestName()} not implemented`);
+                        state.endTest('skipped');
+                    }
+                }
+                else {
+                    state.endTest('passed', duration);
+                    log.info(messages[test].passed, duration);
+                }
+
+                setTimeout(() => { // Escape from try-catch used in LS
+                    if(state.hasNextTest()) {
+                        this.performTest(state.nextTest().id, state, log, data, cb);
+                    } else {
+                        cb(true);
+                    }
+                });
+            })
+        } else {
+            state.endTest('skip');
+            setTimeout(() => { // Escape from try-catch used in LS
+                if(state.hasNextTest()) {
+                    this.performTest(state.nextTest().id, state, log, data, cb);
+                } else {
+                    cb(true);
+                }
+            });
+        }
     }
 }
 
-export default TestRunner
+export default TestRunner;

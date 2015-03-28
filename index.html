@@ -98,8 +98,8 @@
                             </li>
 
                             <!-- ko foreach: {data: $data.tests, as: 'test'} -->
-                                <li data-bind="css: 'icon-' + test.state" class="icon">
-                                    <span data-bind="text: test.duration"></span>
+                                <li data-bind="css: 'icon-' + test.state()" class="icon">
+                                    <span data-bind="text: test.duration()"></span>
                                 </li>
                             <!-- /ko -->
                         </ol>

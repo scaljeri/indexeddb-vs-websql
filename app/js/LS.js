@@ -9,14 +9,14 @@ export default class LS extends Testable {
         return typeof(Storage) !== void(0);
     }
 
-    setup(cb) {
+    setup(data, cb) {
         localStorage.clear();
         cb();
     }
 
-    insert(records, cb) {
+    insert(data, cb) {
        try {
-           records.forEach((record) => {
+           data.records.forEach((record) => {
                localStorage.setItem(record.ssn, JSON.stringify(record)) ;
            });
            cb();
@@ -25,8 +25,13 @@ export default class LS extends Testable {
        }
     }
 
-    selectByPK(key, cb) {
-        let record = localStorage.getItem(key) ;
-        cb(record);
+    singleByPK(data, cb) {
+        let record = localStorage.getItem(data.single.pk) ;
+        if (record) {
+            cb();
+        } else {
+            cb({status: 'error', msg: 'No record found'});
+
+        }
     }
 }

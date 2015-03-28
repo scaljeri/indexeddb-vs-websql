@@ -35,6 +35,7 @@ class View {
                 this.busy = true;
 
                 Log.clear();
+                vm.clearTestData();
 
                 TestRunner.instance.run(() => {
                     "use strict";
@@ -42,7 +43,7 @@ class View {
                 });
             }
             else {
-                new Log().warn(null, 'In progress already! Please wait!');
+                new Log().warn('In progress already! Please wait (or reload this page)!!');
             }
         });
 
