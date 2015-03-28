@@ -76,7 +76,7 @@ class TestRunner {
     getData(cb) {
         let settings = ViewModel.instance.config;
 
-        if (!testData || this.seed !== settings.seed() || this.records !== parseInt(settings.records())) {
+        if (this.seed !== parseInt(settings.seed()) || this.records !== parseInt(settings.records())) {
             this.seed = parseInt(settings.seed());
             this.records = parseInt(settings.records());
 
@@ -90,7 +90,8 @@ class TestRunner {
             let w = new Worker("build/data-worker.js");
             w.onmessage = (event) => {
                 "use strict";
-                let testData = event.data;
+                testData = event.data;
+
                 let size = (sizeof(testData.records.slice(0, 100)) * testData.records.length / 100) / 1024 / 1024,
                     units = 'MB';
 
@@ -102,9 +103,9 @@ class TestRunner {
                 cb(testData);
             };
             w.postMessage([settings.records(), settings.seed(), settings.multiple()]);
+        } else {
+            cb(testData);
         }
-
-        return testData;
     }
 
     run(cb) {
@@ -141,6 +142,7 @@ class TestRunner {
                 });
             } else {
                 new Log().warn('Not storage engines enabled for testing');
+                cb();
             }
         });
     }
