@@ -9,6 +9,10 @@ export default class LS extends Testable {
         return typeof(Storage) !== void(0);
     }
 
+    static get instance() {
+        return new LS();
+    }
+
     setup(data, cb) {
         localStorage.clear();
         cb();
@@ -26,9 +30,14 @@ export default class LS extends Testable {
     }
 
     singleByPK(data, cb) {
-        let record = localStorage.getItem(data.single.pk) ;
+        let record = localStorage.getItem(data.single.pk.ssn) ;
         if (record) {
-            cb();
+            record = JSON.parse(record);
+            if (record.email === data.single.pk.email) {
+                cb();
+            } else {
+                cb();
+            }
         } else {
             cb({status: 'error', msg: 'No record found'});
 

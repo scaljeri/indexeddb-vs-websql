@@ -24,36 +24,29 @@ let testData = null;
  */
 let messages = {
     setup: {
-        passed: 'Setup done'
+        info: 'NB'
     },
     insert: {
         busy: 'Inserting records',
-        error: 'Insert',
-        passed: 'Inserted all records'
+        error: 'Insert'
     },
     singleByPK: {
-        error: 'Primary Key record not found',
-        passed: 'Primary Key record found'
+        error: 'Primary Key record not found'
     },
     singleByUI: {
-        error: 'Unique Index record not found',
-        passed: 'Unique Index record found'
+        error: 'Unique Index record not found'
     },
     multiByPK: {
-        error: 'Primary Key records not found',
-        passed: 'Primary Key records found'
+        error: 'Primary Key records not found'
     },
     multiByUI: {
-        error: 'Unique Index records not found',
-        passed: 'Unique Index records found'
+        error: 'Unique Index records not found'
     },
     multiByI: {
-        error: 'Records not found by Index',
-        passed: 'Records not found by Index'
+        error: 'Records not found by Index'
     },
     multiByNoI: {
-        error: 'Records not found using no Index',
-        passed: 'Records not found using no Index'
+        error: 'Records not found using no Index'
     }
 };
 
@@ -109,14 +102,8 @@ class TestRunner {
     }
 
     run(cb) {
-        let engines = {
-            ls: new LS(),
-            indexeddb: new IDB(),
-            websql: new WebSql()
-        };
         let vm = ViewModel.instance;
         let tests = vm.tests;
-        let bm = new Benchmark().start();
 
         this.getData((data) => {
             "use strict";
@@ -126,19 +113,12 @@ class TestRunner {
             });
 
             if (filtered && filtered.length > 0) {
-                filtered.forEach((engine) => {
-                    let log = new Log({prefix: engine.name}),
-                        state = new State(engine, engines[engine.id]);
+                let log = new Log(),
+                    bm = new Benchmark().start();
 
-                    this.performTest([state.getTest().id], state, log, data, (output) => {
-                        if (output) {
-                            log.info('Tests successful', bm.end());
-                        }
-                        else {
-                            log.error('Test failed', bm.end());
-                        }
-                        cb();
-                    });
+                this.testEngines(data, filtered, () => {
+                    log.info('Done', bm.end());
+                    cb();
                 });
             } else {
                 new Log().warn('Not storage engines enabled for testing');
@@ -147,10 +127,38 @@ class TestRunner {
         });
     }
 
+    testEngines(data, engines, cb, i = 0) {
+        "use strict";
+
+        let engine = engines[i];
+
+        if (engine) {
+            let log = new Log({prefix: engine.name}),
+                state = new State(engine),
+                bm = new Benchmark().start();
+
+            this.performTest([state.getTest().id], state, log, data, (output) => {
+                log.subPrefix = null;
+
+                if (output) {
+                    log.info('Tests successful', bm.end());
+                }
+                else {
+                    log.error('Test failed', bm.end());
+                }
+                this.testEngines(data, engines, cb, ++i);
+            });
+        }
+        else {
+            cb();
+        }
+    }
+
     performTest(test, state, log, data, cb) {
         "use strict";
 
         state.startTest();
+        log.subPrefix = state.getDescriptiveName();
 
         if (state.isTestAvailable()) {
             let benchmark = new Benchmark().start();
@@ -158,36 +166,59 @@ class TestRunner {
                 log.busy(messages[test].busy);
             }
 
-            state.getEngine()[test](data, (output) => {
-                let duration = benchmark.end();
+            setTimeout(() => {
+                state.getEngine()[test](data, (output) => {
+                    let duration = benchmark.end();
+                    let containsFatal = false;
+                    let containsError = false;
+                    let containsSkipped = false;
 
-                if (output) {
-                    if (output.status === 'error') {
-                        log.error(`${messages[test].error} - ${output.msg}`, duration);
+                    if (output && output.length > 0) {
+                        output.forEach((item) => {
+                            if (item.fatal) {
+                                containsFatal = true;
+                                log.error(`${messages[test].error} - ${item.fatal}`, duration);
+                            }
+                            if (item.error) {
+                                containsError = true;
+
+                                log.error(`${messages[test].error} - ${item.error}`, duration);
+                            }
+                            if (item.info) {
+                                log.info(`${messages[test].info} - ${item.info}`, duration);
+                            }
+                            if (item.skipped) {
+                                containsSkipped = true;
+                            }
+                        });
+
+                        if (containsFatal) {
+                            return cb(false);
+                        }
+                    }
+
+                    if (containsError || containsFatal) {
                         state.endTest('failed', duration);
-                        return cb(false);
-                    } else if (output.status === 'skip') {
-                        //log.info(`${state.getTestName()} not implemented`);
+                    } else if (containsSkipped) {
                         state.endTest('skipped');
-                    }
-                }
-                else {
-                    state.endTest('passed', duration);
-                    log.info(messages[test].passed, duration);
-                }
-
-                setTimeout(() => { // Escape from try-catch used in LS
-                    if(state.hasNextTest()) {
-                        this.performTest(state.nextTest().id, state, log, data, cb);
                     } else {
-                        cb(true);
+                        state.endTest('passed', duration);
+                        log.info('Done', duration);
                     }
-                });
-            })
+
+                    setTimeout(() => { // Escape from try-catch used in LS
+                        if (state.hasNextTest()) {
+                            this.performTest(state.nextTest().id, state, log, data, cb);
+                        } else {
+                            cb(true);
+                        }
+                    });
+                })
+            }, 1);
         } else {
             state.endTest('skip');
             setTimeout(() => { // Escape from try-catch used in LS
-                if(state.hasNextTest()) {
+                if (state.hasNextTest()) {
                     this.performTest(state.nextTest().id, state, log, data, cb);
                 } else {
                     cb(true);

@@ -2,12 +2,25 @@ import ViewModel from './ViewModel';
 
 class Log {
 
-    constructor(setup={removable: true, prefix: null}) {
+    constructor(setup={removable: true, prefix: null, subPrefix: null}) {
         "use strict";
         this.setup = {
             removable: typeof setup.removable === 'undefined' ? true : setup.removable,
-            prefix: setup.prefix
+            prefix: setup.prefix,
+            subPrefix: setup.subPrefix
         };
+    }
+
+    set prefix(prefix) {
+        "use strict";
+
+        this.setup.prefix = prefix;
+    }
+
+    set subPrefix(subPrefix) {
+        "use strict";
+
+        this.setup.subPrefix = subPrefix;
     }
 
     /*
@@ -73,7 +86,12 @@ class Log {
 
     getPrefix() {
         "use strict";
-        return this.setup.prefix ? `<strong>${this.setup.prefix}</strong>: ` : '';
+        let str = '';
+
+        if (this.setup.subPrefix) {
+            str = `(${this.setup.subPrefix})`
+        }
+        return this.setup.prefix ? `<strong>${this.setup.prefix}${str}</strong>: ` : '';
     }
 
     create(ltype, msg, duration) {

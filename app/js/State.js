@@ -5,10 +5,10 @@ import ViewModel from './ViewModel';
 let vm = ViewModel.instance;
 
 export default class State {
-    constructor(engineSettings, engine) {
+    constructor(engine) {
         this.testIndex = 0;
-        this.engineSettings = engineSettings;
-        this.engine = engine;
+        this.engineSettings = engine;
+        this.engine = new engine.classRef();
     }
 
     getTest() {
@@ -24,6 +24,10 @@ export default class State {
     }
     getTestName() {
         return vm.tests[this.testIndex].name;
+    }
+
+    getDescriptiveName() {
+        return (vm.tests[this.testIndex].single ? '' : 'Multiple ') + vm.tests[this.testIndex].name;
     }
 
     nextTest() {

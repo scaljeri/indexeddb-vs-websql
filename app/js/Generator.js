@@ -39,7 +39,13 @@ function defineBoundsBy(data, key, numberOfMatches, rand) {
 
     let startIndex = rand.get(data.length - numberOfMatches - 1);
 
-    return [data[startIndex][key], data[startIndex + numberOfMatches - 1][key]];
+    if (key !== 'ssn' && key !== 'email') {
+        for(let i = startIndex; i < startIndex + numberOfMatches; i++) {
+            data[i][key] = `${data[i][key]}x`; // make unique
+        }
+    }
+
+    return [data[startIndex], data[startIndex + numberOfMatches - 1]];
 }
 
 class NumberGenerator {
@@ -98,17 +104,18 @@ class Generator {
         }
 
         output.single = {
-            pk: data[indices[0]].ssn,
-            ui: data[indices[1]].email,
-            i: data[indices[2]].name,
-            noi: data[indices[3]].age
+            pk: data[indices[0]],
+            ui: data[indices[1]],
+            i: data[indices[2]],
+            noi: data[indices[3]]
         };
 
-        output.bounds = {
-            ssn: defineBoundsBy(data, 'ssn', boundMatches, rand),
-            email: defineBoundsBy(data, 'email', boundMatches, rand),
-            name: defineBoundsBy(data, 'name', boundMatches, rand),
-            age: defineBoundsBy(data, 'age', boundMatches, rand)
+        output.multi = {
+            numberOfMatches: boundMatches,
+            pk: defineBoundsBy(data, 'ssn', boundMatches, rand),
+            ui: defineBoundsBy(data, 'email', boundMatches, rand),
+            i: defineBoundsBy(data, 'name', boundMatches, rand),
+            noi: defineBoundsBy(data, 'age', boundMatches, rand)
         };
         output.records = shuffleArray(data, rand);
 

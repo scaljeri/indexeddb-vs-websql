@@ -1,3 +1,7 @@
+import IDB from './IDB';
+import WebSql from './WebSql';
+import LS from './LS';
+
 let singleton = Symbol();
 let singletonEnforcer = Symbol()
 
@@ -9,41 +13,49 @@ class ViewModel {
             {
                 id: 'setup',
                 name: 'Setup',
-                enabled: true
+                enabled: true,
+                single: true
             },
             {
                 id: 'insert',
                 name: 'Insert',
-                enabled: true
+                enabled: true,
+                single: true
             },
             {
                 id: 'singleByPK',
                 name: 'PK',
-                enabled: true
+                enabled: true,
+                single: true
             },
             {
                 id: 'singleByUI',
                 name: 'UI',
-                enabled: true
+                enabled: true,
+                single: true
             },
             {
                 id: 'multiByPK',
                 name: 'PK',
+                single: false,
                 enabled: true
             },
             {
                 id: 'multiByUI',
                 name: 'UI',
+                single: false,
                 enabled: true
             },
             {
                 id: 'multiByI',
                 name: 'I',
+                single: false,
                 enabled: true
             },
             {
                 id: 'multiByNoI',
                 name: 'No Index',
+                single: false,
                 enabled: true
             }
         ];
@@ -54,21 +66,24 @@ class ViewModel {
                 checked: ko.observable(true),
                 disabled: ko.observable(true), // TRUE if storage engine is not supported by the browser
                 id: 'ls',
-                tests: []//ko.observableArray([])
+                tests: [],//ko.observableArray([])
+                classRef: LS
             },
             {
                 name: 'IndexedDB',
                 checked: ko.observable(true),
                 disabled: ko.observable(true),
                 id: 'indexeddb',
-                tests: []//ko.observableArray([])
+                tests: [],//ko.observableArray([])
+                classRef: IDB
             },
             {
                 name: 'WebSQL',
                 checked: ko.observable(true),
                 disabled: ko.observable(true),
                 id: 'websql',
-                tests: []//ko.observableArray([])
+                tests: [],//ko.observableArray([])
+                classRef: WebSql
             }
         ]);
 
