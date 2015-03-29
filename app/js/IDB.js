@@ -72,39 +72,39 @@ class IDB extends Testable {
     setup(data, cb) {
         let status = [];
 
-        if (dbconn) {
-            dbconn.close();
-        }
+        if (!dbconn) {
+            this.connect(
+                () => {          // onsuccess
+                    cb(status);
+                },
+                (event) => {    // onerror
+                    status.push({fatal: `Could not open the db: ${event.message}, ${dbconn.errorCode}`});
+                    cb(status);
+                }, (event) => { // onupgradeneeded
+                    // Update object stores and indices
+                    status.push({info: 'Upgrade needed (onupgradeneeded)'});
 
-        this.connect(
-            () => {          // onsuccess
-                cb(status);
-            },
-            (event) => {    // onerror
-                status.push({fatal: `Could not open the db: ${event.message}, ${dbconn.errorCode}`});
-                cb(status);
-            }, (event) => { // onupgradeneeded
-                // Update object stores and indices
-                status.push({info: 'Upgrade needed (onupgradeneeded)'});
+                    let db = event.target.result;
 
-                let db = event.target.result;
+                    while (db.objectStoreNames.length) {
+                        console.info('delete object store: ' + db.objectStoreNames[0]);
+                        db.deleteObjectStore(db.objectStoreNames[0]);
+                    }
 
-                while (db.objectStoreNames.length) {
-                    console.info('delete object store: ' + db.objectStoreNames[0]);
-                    db.deleteObjectStore(db.objectStoreNames[0]);
+                    let objectStore = db.createObjectStore(OBJECTSTORENAME, {
+                        keyPath: "ssn"
+                    });
+                    objectStore.createIndex("name", "name", {
+                        unique: false
+                    });
+                    objectStore.createIndex("email", "email", {
+                        unique: true
+                    });
                 }
-
-                let objectStore = db.createObjectStore(OBJECTSTORENAME, {
-                    keyPath: "ssn"
-                });
-                objectStore.createIndex("name", "name", {
-                    unique: false
-                });
-                objectStore.createIndex("email", "email", {
-                    unique: true
-                });
-            }
-        );
+            );
+        } else {
+           cb();
+        }
     }
 
     /* the last two parameters are ment for internal use only

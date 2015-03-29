@@ -7,21 +7,10 @@ import IDB from './IDB';
 import WebSql from './WebSql';
 import LS from './LS';
 
-let callable = Function.bind.bind(Function.call);
-
 let singleton = Symbol();
 let singletonEnforcer = Symbol();
 let testData = null;
 
-/*
- this.idb = new IDB();
- new Benchmark().start(callable(IDB.prototype.setup, this.idb, {
- x: 10
- }), (duration) => {
- console.log('duration=' + duration);
- Log.instance.info(10, 'hello');
- });
- */
 let messages = {
     setup: {
         info: 'NB'
@@ -163,7 +152,7 @@ class TestRunner {
         if (state.isTestAvailable()) {
             let benchmark = new Benchmark().start();
             if (messages[test].busy) {
-                log.busy(messages[test].busy);
+                log.busy(messages[test].busy, true);
             }
 
             setTimeout(() => {

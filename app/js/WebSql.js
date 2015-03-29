@@ -70,7 +70,7 @@ class WebSql extends Testable {
                     results.rows.item(0).email === data.single.pk.email) {
                     cb();
                 } else {
-                    cb([{error: 'Found wrong record'}]);
+                    cb([{error: results.rows.length === 0 ? 'No record found' : 'Multiple records found'}]);
                 }
             }, (t, err) => {
                 cb([{fatal: `Could not run query: ${err.message}`}]);
