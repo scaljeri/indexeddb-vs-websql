@@ -81,7 +81,7 @@ function es6ToEs5(fileName, outputName) {
         .pipe($.sourcemaps.init({
             loadMaps: true
         })) // loads map from browserify file
-        //.pipe($.uglify())
+        .pipe($.uglify())
         .pipe($.sourcemaps.write('./')) // writes .map file
         .pipe(gulp.dest('./build'))
         .pipe($.livereload());
