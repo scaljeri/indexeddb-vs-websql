@@ -4,14 +4,8 @@ import Testable from './Testable';
 
 var DBNAME = 'wsql-test', TABLENAME = 'customers', VERSION = 1;
 let dbconn;
-let dbMapper = {
-   MySQL: {
-       TEXT: 'VARCHAR(30)'
-   }
-}
 
-export default
-class WebSql extends Testable {
+export default class WebSql extends Testable {
     constructor(options = {dbname: 'idb-test', store: 'customers'}) {
         this.dbname = options.dbname;
         this.store = options.store;
@@ -28,9 +22,7 @@ class WebSql extends Testable {
         let output = [`DROP TABLE IF EXISTS ${TABLENAME};`,
             `DROP INDEX IF EXISTS email_idx;`,
             `CREATE TABLE IF NOT EXISTS ${TABLENAME} (ssn ${text} PRIMARY KEY, email TEXT NOT NULL, name ${text}, age REAL);`]; //, UNIQUE(email));`];
-            //`CREATE UNIQUE INDEX email_idx ON ${TABLENAME} (email);\n`];
-
-        output
+        output.push(`CREATE UNIQUE INDEX email_idx ON ${TABLENAME} (email);\n`);
         return output;
     }
 
@@ -103,25 +95,6 @@ class WebSql extends Testable {
 
     multiByPK(data, cb) {
         this.multiByUI(data, cb, 'pk', 'ssn');
-        /*
-        if (!dbconn) {
-            this.connect();
-        }
-
-        dbconn.transaction(function (tx) {
-            var sql = `SELECT * FROM ${TABLENAME} WHERE ssn >= "${data.multi.pk[0].ssn}" AND ssn <= "${data.multi.pk[1].ssn}"`;
-
-            tx.executeSql(sql, [], (tx, results) => {
-                if (results.rows.length === data.multi.numberOfMatches) {
-                    cb();
-                } else {
-                    cb([{error: `Found ${results.rows.length} records instead of ${data.multi.numberOfMatches}`}]);
-                }
-            }, (t, err) => {
-                cb([{fatal: `Could not run query: ${err.message}`}]);
-            });
-        });
-        */
     }
 
     multiByUI(data, cb, stype = 'ui', searchKey = 'email') {
@@ -136,7 +109,6 @@ class WebSql extends Testable {
                 if (results.rows.length === data.multi.numberOfMatches) {
                     cb();
                 } else {
-                    debugger;
                     cb([{error: `Found ${results.rows.length} records instead of ${data.multi.numberOfMatches}`}]);
                 }
             }, (t, err) => {
@@ -150,22 +122,6 @@ class WebSql extends Testable {
     }
 
     multiByNoI(data, cb) {
-        if (!dbconn) {
-            this.connect();
-        }
-
-        dbconn.transaction(function (tx) {
-            var sql = `SELECT * FROM ${TABLENAME} WHERE age = ${data.multi.noi[0].age} OR age = ${data.multi.noi[1].age}`;
-
-            tx.executeSql(sql, [], (tx, results) => {
-                if (results.rows.length === data.multi.numberOfMatches) {
-                    cb();
-                } else {
-                    cb([{error: `Found ${results.rows.length} records instead of ${data.multi.numberOfMatches}`}]);
-                }
-            }, (t, err) => {
-                cb([{fatal: `Could not run query: ${err.message}`}]);
-            });
-        });
+        this.multiByUI(data, cb, 'noi', 'age');
     }
 }

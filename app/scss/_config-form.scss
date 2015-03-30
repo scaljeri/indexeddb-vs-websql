@@ -1,11 +1,37 @@
 .config-form {
-    border: 2px solid grey;
-    border-radius: 10px;
-    height: 280px;
-    margin: 20px;
-    padding: 20px;
+    margin:20px;
+    @include size(280px, 300px);
 
-    legend {
-        padding-left: 10px;
+    fieldset {
+        border: 2px solid grey;
+        border-radius: 10px;
+        padding: 20px;
+        @include size(100%, 240px);
+
+        legend {
+            padding-left: 10px;
+            margin-bottom: 0;
+        }
+
+        form {
+            margin-top: -10px;
+        }
+    }
+
+    a {
+        float: right;
+        margin: 10px 10px 0 0;
+
+        span {
+            vertical-align: top;
+            line-height: 16px;
+            margin-left: -5px;
+            word-spacing: -8px; // ????
+        }
+    }
+
+    a:first-of-type {
+        float: left;
+        margin-left: 10px;
     }
 }

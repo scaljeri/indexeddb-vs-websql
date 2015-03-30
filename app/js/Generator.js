@@ -1,5 +1,4 @@
 let alphabet = 'abcdefghijklmnopqrstuvwxyz01234567890'.split('');
-let names = ['Bill', 'Bob', 'Bratt', 'Donna', 'Joyce', 'Chris', 'Angelina', 'George', 'Obama', 'Jill', 'Thomas', 'Martin', 'Louise', 'Francesca', 'Holly', 'Sarah', 'Zoe'];
 
 function generateSSN(rand) {
     "use strict";
@@ -9,10 +8,17 @@ function generateSSN(rand) {
         '-' + rand.get(9, 0) + rand.get(9, 0) + rand.get(9, 0) + rand.get(9, 0);
 }
 
-function generateString(length, rand) {
+function generateString(max, min, rand) {
     "use strict";
+    let str = '', length = max;
 
-    let str = '';
+    if (typeof min !== 'number') {
+        rand = min;
+    }
+    else {
+        length = rand.get(max, min);
+    }
+
     for (var i = 0; i < length; i++) {
         str += alphabet[rand.get(35, 0)];
     }
@@ -40,8 +46,8 @@ function defineBoundsBy(data, key, numberOfMatches, rand) {
     let startIndex = rand.get(data.length - numberOfMatches - 1);
 
     if (key !== 'ssn' && key !== 'email') {
-        for(let i = startIndex; i < startIndex + numberOfMatches; i++) {
-            data[i][key] = `${data[i][key]}.1`; // make unique
+        for (let i = startIndex; i < startIndex + numberOfMatches; i++) {
+            data[i][key] = `${data[i][key]}`; // make unique
         }
     }
 
@@ -81,13 +87,15 @@ class Generator {
         let data = [];
         let rand = new NumberGenerator(seed);
 
+        generateString(8, rand);
         let name;
+        // Create some fake records
         while (records > data.length) {
             data.push({
-                ssn: generateSSN(rand), // PK
-                name: (name = names[rand.get(16, 0)]), // I
-                email: name + '@' + generateString(5, rand) + '.' + generateString(3, rand), // UI
-                age: rand.get(100) // No I
+                ssn:   generateSSN(rand), // PK
+                name:  `${generateString(8, 3, rand)} ${generateString(10, 5, rand)}`, // I
+                email: `${generateString(8, 3, rand)}@${generateString(8, rand)}.${generateString(3, rand)}`, // UI
+                age:   rand.get(1000000000) // No I
             });
         }
 
