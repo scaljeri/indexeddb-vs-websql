@@ -2,13 +2,13 @@
 
 <head>
     <link href="bower_components/normalize.css/normalize.css" rel="stylesheet" type="text/css">
-    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="bower_components/dialog-polyfill/dialog-polyfill.css" rel="stylesheet type=" text
-    /css">
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="bower_components/dialog-polyfill/dialog-polyfill.css" rel="stylesheet" type="text/css">
     <link href="build/css/styles.css" rel="stylesheet" type="text/css">
+
     <script src="bower_components/dialog-polyfill/dialog-polyfill.js"></script>
     <script src="bower_components/zepto.js/dist/zepto.min.js"></script>
-    <script src="bower_components/knockout.js/knockout.debug.js"></script>
+    <script src="bower_components/knockout.js/knockout.js"></script>
     <script src="app/libs/symbol-polyfill.js"></script>
     <script src="app/libs/sizeof.compressed.js"></script>
     <script src="build/bundle.js"></script>
@@ -137,7 +137,9 @@
 
 <script>
     var dialog = document.querySelector('dialog.dialog-sql');
-    dialogPolyfill.registerDialog(dialog);
+    if (!dialog.showModal){
+        dialogPolyfill.registerDialog(dialog);
+    }
 </script>
 </body>
 
