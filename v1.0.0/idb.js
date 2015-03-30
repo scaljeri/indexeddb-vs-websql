@@ -10,8 +10,9 @@
 			* callback - a callback function which expectes: {setup:true} (succes) or {setup:false} (error) object
 	*/
 	window.IDB = function(options){
-		idb = getIndexedDBObject( 'IndexedDB' ) ;
-	}
+		idb = getIndexedDBObject( 'indexedDB' ) ;
+	};
+
 	window.IDB.prototype = {
 		id: 'idb',
 		name: 'IndexedDB',
@@ -219,12 +220,12 @@
 			// Update object stores and indices    
 			console.info('onupgradeneeded') ;
 
-			var db = event.target.result ;
+			var db = event.target.result;
 
-	 		for (var i = 0; i < db.objectStoreNames.length; i ++) {
-                                console.info('delete object store: ' + db.objectStoreNames[i]) ;
-                                db.deleteObjectStore(db.objectStoreNames[i]);
-                        }
+      while (db.objectStoreNames.length) {
+        console.info('delete object store: ' + db.objectStoreNames[0]) ;
+        db.deleteObjectStore(db.objectStoreNames[0]);
+      }
 
 			var objectStore = db.createObjectStore( OBJECTSTORENAME, {keyPath:"ssn"} ) ;
 			objectStore.createIndex("name","name",{unique:false});         
@@ -232,9 +233,12 @@
 		} ;
 	}
 
-	function getIndexedDBObject(name) {
-		return window[name] || window['webkit' + name] || window['moz' + name] || window['ms' + name] ;
-	}
+  function getIndexedDBObject(name) {
+    var upper = name[0].toUpperCase() + name.slice(1);
+
+    return window[name] || window['webkit' + upper] || window['moz' + upper] || window['ms' + upper] ;
+  }
+
 	function getTransaction( mode) {
 		try {
 			return dbconn.result.transaction([OBJECTSTORENAME], mode ) ;
