@@ -87,7 +87,6 @@ class IDB extends Testable {
                     let db = event.target.result;
 
                     while (db.objectStoreNames.length) {
-                        console.info('delete object store: ' + db.objectStoreNames[0]);
                         db.deleteObjectStore(db.objectStoreNames[0]);
                     }
 

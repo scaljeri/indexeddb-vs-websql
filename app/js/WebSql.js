@@ -54,7 +54,6 @@ export default class WebSql extends Testable {
             tx.executeSql(`DELETE FROM ${TABLENAME}`);
 
             data.records.forEach((record) => {
-                console.log("INSER " + record.age);
                 tx.executeSql(`INSERT INTO ${TABLENAME} (ssn, email, name, age) VALUES(?,?,?,?)`,
                     [record['ssn'],
                         record['email'],

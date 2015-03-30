@@ -2,6 +2,13 @@
 
 Donwload SQL dump: http://jsfiddle.net/VBJ9h/319/
 
-A simple test between WebSQL and IndexedDB. Currently WebSQL can only be tested in Chrome and IndexedDB in Firefox.
+A simple test between WebSQL and IndexedDB
 
-demo page: http://scaljeri.github.com/indexeddb-vs-websql/
+## v1.0.0
+
+[demo page](http://scaljeri.github.com/indexeddb-vs-websql/v1.0.0/index.html)
+
+## v2.0.0
+Improved project structure written in ES6 and SASS
+
+[demo page](http://scaljeri.github.com/indexeddb-vs-websql/v2.0.0/index.html)
