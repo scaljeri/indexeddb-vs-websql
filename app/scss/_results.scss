@@ -1,0 +1,72 @@
+.results {
+    border: 2px solid grey;
+    border-radius: 10px;
+    margin: 20px;
+    padding: 20px;
+    position: relative;
+    legend {
+        margin-bottom: 0;
+        padding-left: 10px;
+    }
+    & > section {
+        position: relative;
+    }
+    .results-header {
+        ol {
+            list-style-type: none;
+            border-bottom: 1px solid lightgrey;
+            display: flex;
+            font-weight: 700;
+            padding: 0;
+            margin-bottom: 2;
+            text-align: center;
+        }
+        .upper {
+            li:first-child {
+                display: inline-block;
+                width: 150px;
+            }
+            li:nth-child(2) {
+                border-right: 1px solid lightgrey;
+                flex: 2;
+                margin-bottom: 2px;
+            }
+            .upper-header-single {
+                border-right: 1px solid lightgrey;
+                flex: 2;
+                margin-bottom: 2px;
+            }
+            .upper-header-multi {
+                flex: 4;
+                margin-bottom: 2px;
+                input {
+                    display: inline-block;
+                    height: 20px;
+                    padding: 0 5px;
+                    width: 60px;
+                }
+            }
+        }
+        .lower {
+            li {
+                border-right: 1px solid lightgrey;
+                flex: 1;
+            }
+            li:first-child {
+                display: inline-block;
+                flex: none;
+                width: 150px;
+                input {
+                    display: none;
+                }
+            }
+            li:last-child {
+                border-right: none;
+            }
+        }
+    }
+}
+
+@import 'results/icons';
+@import 'results/header';
+@import 'results/tests';

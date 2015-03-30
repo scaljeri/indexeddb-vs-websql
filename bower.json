@@ -1,0 +1,25 @@
+{
+  "name": "indexeddb-vs-websql",
+  "version": "0.0.0",
+  "homepage": "https://github.com/scaljeri/indexeddb-vs-websql",
+  "authors": [
+    "Lucas Calje <lucas@frontmen.nl>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "knockout.js": "~3.1.0",
+    "zepto.js": "~1.1.6",
+    "normalize.css": "~3.0.2",
+    "dialog-polyfill": "~0.3.0"
+  },
+  "devDependencies": {
+    "bootstrap": "~3.3.4"
+  }
+}

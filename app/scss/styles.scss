@@ -1,0 +1,104 @@
+@import "mixins/position";
+@import "mixins/size";
+@import "reset";
+@import "config-form";
+@import "results";
+@import "logging";
+@import "dialog-sql";
+
+* {
+    box-sizing: border-box;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1;
+    font-kerning: normal;
+}
+
+body {
+    background-color: #fff;
+    .config-form {
+        float: left;
+        width: 250px;
+    }
+    .logging {
+        float: right;
+        width: 680px;
+    }
+    .results {
+        float: right;
+        width: calc(100% - 40px);
+    }
+    main {
+        max-width: 1024px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+// FORMS ELEMENTS
+input[type="checkbox"] {
+    margin: 0;
+}
+
+// ICONS
+.icon {
+    &::before {
+        content: '';
+        display: inline-block;
+        background: {
+            repeat: no-repeat;
+            size: 45px;
+        }
+        overflow: hidden;
+        @include size(23px,
+        20px);
+    }
+}
+
+.icon-busy::before {
+    background: {
+        image: url(../../app/images/ajax-loader.gif);
+        size: 20px;
+        position: 2px 4px;
+    }
+}
+
+.icon-passed::before {
+    background: {
+        image: url(../../app/images/check-and-cross-icons.png);
+        position: -1px -7px;
+    }
+}
+
+.icon-failed,
+.icon-error {
+    &::before {
+        background: {
+            image: url(../../app/images/check-and-cross-icons.png);
+            position: -24px -6px;
+        }
+    }
+}
+
+.icon-skipped::before {
+    background: {
+        image: url(../../app/images/skip-icon.png);
+        position: 0 -2px;
+        size: 24px 24px;
+    }
+}
+
+.icon-info::before {
+    background: {
+        image: url(../../app/images/info-icon.png);
+        position: 1px 0;
+        size: 21px 21px;
+    }
+}
+
+.icon-warn::before {
+    background: {
+        image: url(../../app/images/warn-icon.png);
+        position: 0 -2px;
+        size: 24px 24px;
+    }
+}

@@ -1,0 +1,146 @@
+<html>
+
+<head>
+    <link href="bower_components/normalize.css/normalize.css" rel="stylesheet" type="text/css">
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="bower_components/dialog-polyfill/dialog-polyfill.css" rel="stylesheet" type="text/css">
+    <link href="build/css/styles.css" rel="stylesheet" type="text/css">
+
+    <script src="bower_components/dialog-polyfill/dialog-polyfill.js"></script>
+    <script src="bower_components/zepto.js/dist/zepto.min.js"></script>
+    <script src="bower_components/knockout.js/knockout.js"></script>
+    <script src="app/libs/symbol-polyfill.js"></script>
+    <script src="app/libs/sizeof.compressed.js"></script>
+    <script src="build/bundle.js"></script>
+
+<head>
+<body>
+<main>
+    <section class="config-form">
+        <fieldset >
+            <legend>Configuration</legend>
+            <form>
+                <div class="form-group">
+                    <label for="number-of-records">Number of records</label>
+                    <input type="number" class="form-control" id="number-of-records"
+                           data-bind="value: config.records">
+                </div>
+                <div class="form-group">
+                    <label for="seedValue">Seed value</label>
+                    <input type="number" class="form-control" id="seedValue" data-bind="value: config.seed">
+                </div>
+                <button run-tests class="btn btn-default">
+                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                    <span>Go</span>
+                </button>
+                <button download-data class="pull-right btn btn-default">
+                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                    <span>Data (SQL)</span>
+                </button>
+            </form>
+        </fieldset>
+
+        <a class="btn btn-primary btn-xs glyphicon glyphicon-envelope" target="_blank"
+           href="https://gitter.im/scaljeri/indexeddb-vs-websql?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
+            <span>Feedback</span>
+        </a>
+        <a class="btn btn-primary btn-xs glyphicon glyphicon-book" target="_blank" href="http://calje.eu/index.php/indexed-database-api/">
+            <span>IndexedDB theory</span>
+        </a>
+
+    </section>
+
+    <fieldset class="logging">
+        <legend>Logging</legend>
+
+        <p class="log-table-header">
+            <span class="log-type">Type</span><span class="log-duration">Duration</span><span class="log-messgae">Message</span>
+        </p>
+        <article class="log-history">
+            <table>
+
+                <tbody data-bind="foreach: logHistory">
+                <tr class="log-row">
+                    <td data-bind="css: 'icon-' + ltype()" class="icon icon-small log-type"></td>
+                    <td data-bind="text: duration" class="log-duration"></td>
+                    <td data-bind="html: message" class="log-message"></td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
+    </fieldset>
+
+    <fieldset class="results">
+        <legend>Results</legend>
+        <section class="results-header">
+            <p class="icon-explained">
+                <span class="icon icon-passed test-passed">&nbsp;Passed</span>
+                <span class="icon icon-failed test-failed">&nbsp;Failed</span>
+                <span class="icon icon-skipped test-skipped">&nbsp;Skipped</span>
+            </p>
+
+            <ol class="upper">
+                <li></li>
+                <li class="upper-header-single">
+                    <span>Select single value by</span>
+                </li>
+                <li class="upper-header-multi">
+                    <span>Select multiple values by</span>
+                    <input data-bind="value: config.multiple" type="number" class="form-control"/>
+                </li>
+            </ol>
+
+            <ol class="lower">
+                <li>
+                    <span>Engine</span>
+                </li>
+                <!-- ko foreach: tests -->
+                <li>
+                    <span data-bind="text: name"></span>
+                    <input data-bind="checked: enabled" type="checkbox" class="checkbox"/>
+                </li>
+                <!-- /ko -->
+            </ol>
+        </section>
+
+        <!-- ko foreach: engines -->
+        <section class="engine-results">
+            <ol class="tests">
+                <li>
+                    <input data-bind="checked: checked" type="checkbox" class="checkbox-engine"/>
+                    <span data-bind="text: name"></span>
+                </li>
+
+                <!-- ko foreach: {data: $data.tests, as: 'test'} -->
+                <li data-bind="css: 'icon-' + test.state()" class="icon">
+                    <span data-bind="text: test.duration()"></span>
+                </li>
+                <!-- /ko -->
+            </ol>
+            <div data-bind="css: 'engine-' + !disabled()" class="disabled-tests"></div>
+        </section>
+        <!-- /ko -->
+    </fieldset>
+</main>
+
+<dialog class="dialog-sql">
+    <p>Choose output SQL</p>
+    <ol supported-db-types>
+        <li>
+            <a href="#">MySQL</a>
+        </li>
+        <li>
+            <a href="#">SQLite</a>
+        </li>
+    </ol>
+</dialog>
+
+<script>
+    var dialog = document.querySelector('dialog.dialog-sql');
+    if (!dialog.showModal){
+        dialogPolyfill.registerDialog(dialog);
+    }
+</script>
+</body>
+
+</html>
