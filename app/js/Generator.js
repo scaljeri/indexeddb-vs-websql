@@ -41,7 +41,7 @@ function defineBoundsBy(data, key, numberOfMatches, rand) {
 
     if (key !== 'ssn' && key !== 'email') {
         for(let i = startIndex; i < startIndex + numberOfMatches; i++) {
-            data[i][key] = `${data[i][key]}x`; // make unique
+            data[i][key] = `${data[i][key]}.1`; // make unique
         }
     }
 

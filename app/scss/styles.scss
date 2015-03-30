@@ -4,8 +4,13 @@
 @import "config-form";
 @import "results";
 @import "logging";
+@import "dialog-sql";
+
 * {
     box-sizing: border-box;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1;
+    font-kerning: normal;
 }
 
 body {

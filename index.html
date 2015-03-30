@@ -3,7 +3,9 @@
 <head>
     <link href="bower_components/normalize.css/normalize.css" rel="stylesheet" type="text/css">
     <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="bower_components/dialog-polyfill/dialog-polyfill.css" rel="stylesheet type="text/css">
     <link href="build/css/styles.css" rel="stylesheet" type="text/css">
+    <script src="bower_components/dialog-polyfill/dialog-polyfill.js"></script>
     <script src="bower_components/zepto.js/dist/zepto.min.js"></script>
     <script src="bower_components/knockout.js/knockout.debug.js"></script>
     <script src="app/libs/symbol-polyfill.js"></script>
@@ -109,86 +111,21 @@
                 </fieldset>
             </main>
 
-            <!--
-            <h2>Participants</h2> Here are the participants:
-            <div data-bind="template: { name: 'person-template', data: list}"></div>
-            <div data-bind="template: { name: 'person-template-list', foreach:list }"></div>
+            <dialog class="dialog-sql">
+                <p>Choose output SQL</p>
+                <ol supported-db-types>
+                    <li>
+                        <a href="#">MySQL</a>
+                    </li>
+                    <li>
+                        <a href="#">SQLite</a>
+                    </li>
+                </ol>
+            </dialog>
 
-            <script type="text/html" id="person-template">
-                <h3 data-bind="text: $data[0].name"></h3>
-                <p>Credits: <span data-bind="text: $data[0].credits"></span>
-                </p>
-            </script>
-            <script type="text/html" id="person-template-list">
-                <h3 data-bind="text: $data.name"></h3>
-                <p>Credits: <span data-bind="text: $data.credits"></span>
-                </p>
-            </script>
-
-            <button data-bind="click: addPerson">Add Person</button>
-
-            <script type="text/javascript">
-                function MyViewModel() {
-                    this.list = ko.observableArray([
-                        {
-                            name: 'Franklin',
-                            credits: 250
-                        },
-                        {
-                            name: 'Mario',
-                            credits: 5800
-                        }]);
-                }
-                MyViewModel.prototype.addPerson = function () {
-                    this.list.push({
-                        name: 'Other',
-                        credits: 10
-                    });
-                };
-                ko.applyBindings(new MyViewModel());
-            </script>
-            <!--
-    <h3>Details</h3>
-
-    <p>First Name: <input data-bind="value: firstName"></p>
-    <p>Last Name: <input data-bind="value: lastName"></p>
-
-    <p>FullName: <span data-bind="text: fullName"></span></p>
-
-    <h2>Friends</h2>
-
-    <div data-bind="template: 'friendsTemplate'"></div>
--->
             <script>
-                /*
-                                                                                                                                                                        function Friend(name) {
-                                                                                                                                                                            return {
-                                                                                                                                                                                name: ko.observable(name)
-                                                                                                                                                                            };
-                                                                                                                                                                        }
-
-                                                                                                                                                                        $(function () {
-                                                                                                                                                                            var viewModel = {
-                                                                                                                                                                                firstName: ko.observable('liucas'),
-                                                                                                                                                                                lastName:  ko.observable('calje'),
-                                                                                                                                                                                friends: ko.observableArray([new Friend('Renske'), new Friend('John')])
-                                                                                                                                                                            };
-                                                                                                                                                                            viewModel.fullName = ko.dependentObservable(function () {
-                                                                                                                                                                                return this.firstName() + ' ' + this.lastName();
-                                                                                                                                                                            }, viewModel);
-
-                                                                                                                                                                            ko.applyBindings(viewModel);
-                                                                                                                                                                        });
-                                                                                                                                                                        */
-                /*
-                viewModel = {
-                    nor: ko.observable(1000),
-                    config: {
-                        numberOfRecords: ko.observable(2000)
-                    }
-                };
-
-                ko.applyBindings(viewModel); */
+                var dialog = document.querySelector('dialog.dialog-sql');
+                dialogPolyfill.registerDialog(dialog);
             </script>
         </body>
 
